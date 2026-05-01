@@ -11,9 +11,9 @@ export default function DashboardPage() {
   const { getToken, signOut } = useAuth();
   const { store, loading: storeLoading, error } = useStore();
 
-  const [stats, setStats]             = useState(null);
+  const [stats, setStats]               = useState(null);
   const [statsLoading, setStatsLoading] = useState(true);
-  const [copied, setCopied]           = useState(false);
+  const [copied, setCopied]             = useState(false);
 
   useEffect(() => {
     if (!store) return;
@@ -27,7 +27,6 @@ export default function DashboardPage() {
       .finally(() => setStatsLoading(false));
   }, [store]);
 
-  // ─── Early returns DESPUÉS de todos los hooks ───
   if (storeLoading) {
     return <div className={styles.center}><span className={styles.spinner} /></div>;
   }
@@ -52,6 +51,7 @@ export default function DashboardPage() {
     ? Math.max(0, Math.ceil((new Date(store.trial_expires) - Date.now()) / 86400000))
     : null;
   const subStatus = store.sub_status || (store.is_active ? 'trial' : 'expired');
+  const waText    = encodeURIComponent('Mira mi catalogo: ' + catalogUrl);
 
   async function copiarEnlace() {
     try {
@@ -63,7 +63,7 @@ export default function DashboardPage() {
 
   return (
     <div className={styles.page}>
-      {/* Topbar */}
+
       <header className={styles.topbar}>
         <span className={styles.brand}>PlaceStore</span>
         <div className={styles.topbarRight}>
@@ -80,10 +80,8 @@ export default function DashboardPage() {
 
       <div className={styles.container}>
 
-        {/* Banner suscripción */}
         <SubBanner status={subStatus} diasRestantes={diasRestantes} />
 
-        {/* Enlace catálogo */}
         <div className={styles.catalogCard}>
           <div className={styles.catalogInfo}>
             <p className={styles.catalogLabel}>Tu catálogo público</p>
@@ -96,10 +94,10 @@ export default function DashboardPage() {
               className={`btn btn-ghost ${styles.copyBtn}`}
               onClick={copiarEnlace}
             >
-              {copied ? '✓ Copiado' : 'Copiar enlace'}
+              {copied ? 'Copiado' : 'Copiar enlace'}
             </button>
             
-              href={`https://wa.me/?text=${encodeURIComponent(`Mira mi catálogo: ${catalogUrl}`)}`}
+              href={'https://wa.me/?text=' + waText}
               target="_blank"
               rel="noreferrer"
               className="btn btn-primary"
@@ -110,36 +108,34 @@ export default function DashboardPage() {
           </div>
         </div>
 
-        {/* Stats */}
         <div className={styles.statsGrid}>
           <StatCard
             label="Productos activos"
-            value={statsLoading ? '—' : stats?.available_products ?? 0}
+            value={statsLoading ? '-' : stats?.available_products ?? 0}
             icon="📦"
-            sub={statsLoading ? '' : `${stats?.total_products ?? 0} en total`}
+            sub={statsLoading ? '' : (stats?.total_products ?? 0) + ' en total'}
           />
           <StatCard
             label="Vistas al catálogo"
-            value={statsLoading ? '—' : stats?.total_views ?? 0}
+            value={statsLoading ? '-' : stats?.total_views ?? 0}
             icon="👁️"
             sub="desde el inicio"
           />
           <StatCard
             label="Categorías"
-            value={statsLoading ? '—' : stats?.total_categories ?? 0}
+            value={statsLoading ? '-' : stats?.total_categories ?? 0}
             icon="🗂️"
             sub="creadas"
           />
           <StatCard
             label="Producto más visto"
-            value={statsLoading ? '—' : stats?.top_product?.name || 'Sin datos'}
+            value={statsLoading ? '-' : (stats?.top_product?.name || 'Sin datos')}
             icon="🏆"
-            sub={stats?.top_product ? `${stats.top_product.views_count} vistas` : ''}
+            sub={stats?.top_product ? stats.top_product.views_count + ' vistas' : ''}
             small
           />
         </div>
 
-        {/* Acciones rápidas */}
         <div className={styles.quickActions}>
           <h2 className={styles.sectionTitle}>Acciones rápidas</h2>
           <div className={styles.actionGrid}>
@@ -161,7 +157,7 @@ export default function DashboardPage() {
             >
               <span className={styles.actionIcon}>🛍️</span>
               <span className={styles.actionLabel}>Ver mi vitrina</span>
-              <span className={styles.actionArrow}>↗</span>
+              <span className={styles.actionArrow}>&#x2197;</span>
             </a>
           </div>
         </div>
@@ -171,8 +167,6 @@ export default function DashboardPage() {
   );
 }
 
-// ─── Sub-componentes ─────────────────────────────────────────
-
 function SubBanner({ status, diasRestantes }) {
   if (status === 'active') return null;
 
@@ -180,7 +174,7 @@ function SubBanner({ status, diasRestantes }) {
     return (
       <div className={`${styles.banner} ${styles.bannerTrial}`}>
         <span>
-          🕐 Período de prueba — {diasRestantes} día{diasRestantes !== 1 ? 's' : ''} restante{diasRestantes !== 1 ? 's' : ''}
+          {'Periodo de prueba — ' + diasRestantes + ' dia' + (diasRestantes !== 1 ? 's' : '') + ' restante' + (diasRestantes !== 1 ? 's' : '')}
         </span>
         <Link to="/dashboard/suscripcion" className={styles.bannerLink}>Activar plan →</Link>
       </div>
@@ -189,7 +183,7 @@ function SubBanner({ status, diasRestantes }) {
 
   return (
     <div className={`${styles.banner} ${styles.bannerExpired}`}>
-      <span>⚠️ Tu suscripción ha vencido. Tu catálogo no está visible.</span>
+      <span>Tu suscripción ha vencido. Tu catálogo no está visible.</span>
       <Link to="/dashboard/suscripcion" className={styles.bannerLink}>Renovar ahora →</Link>
     </div>
   );
