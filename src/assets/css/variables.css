@@ -1,0 +1,46 @@
+/* src/assets/css/variables.css */
+:root {
+  /* ─── Paleta base JVSoftware / PlaceStore ─── */
+  --color-bg:        #fdfcf8;
+  --color-surface:   #f5f5f0;
+  --color-surface-2: #eeede7;
+  --color-text:      #1a1a1a;
+  --color-text-2:    #66665f;
+  --color-text-3:    #a0a097;
+  --color-cta:       #2ecc71;
+  --color-cta-dark:  #27ae60;
+  --color-cta-light: #d5f5e3;
+  --color-danger:    #e74c3c;
+  --color-danger-bg: #fdf0ee;
+  --color-border:    #e8e8e2;
+  --color-border-2:  #d4d4cc;
+
+  /* ─── Tipografía ─── */
+  --font-main:  "DM Sans", system-ui, sans-serif;
+  --font-mono:  "JetBrains Mono", monospace;
+
+  /* ─── Espaciado ─── */
+  --space-1:  4px;
+  --space-2:  8px;
+  --space-3:  12px;
+  --space-4:  16px;
+  --space-5:  24px;
+  --space-6:  32px;
+  --space-7:  48px;
+  --space-8:  64px;
+
+  /* ─── Radios ─── */
+  --radius-sm:  6px;
+  --radius-md:  12px;
+  --radius-lg:  20px;
+  --radius-xl:  32px;
+  --radius-full: 9999px;
+
+  /* ─── Sombras ─── */
+  --shadow-sm:  0 1px 3px rgba(0, 0, 0, 0.06);
+  --shadow-md:  0 4px 16px rgba(0, 0, 0, 0.08);
+  --shadow-lg:  0 8px 32px rgba(0, 0, 0, 0.10);
+
+  /* ─── Transiciones ─── */
+  --transition: 0.18s ease;
+}

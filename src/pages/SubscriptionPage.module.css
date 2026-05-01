@@ -1,0 +1,271 @@
+/* src/pages/SubscriptionPage.module.css */
+
+.page {
+  min-height: 100dvh;
+  background: var(--color-bg);
+  padding: var(--space-6) var(--space-5);
+}
+
+.center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100dvh;
+}
+
+.spinner {
+  display: block;
+  width: 36px;
+  height: 36px;
+  border: 3px solid var(--color-border);
+  border-top-color: var(--color-cta);
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.container {
+  max-width: 600px;
+  margin-inline: auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+.title {
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+/* Status */
+.statusCard {
+  background: #fff;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: var(--space-4) var(--space-5);
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.statusInfo {
+  font-size: 0.9rem;
+  color: var(--color-text);
+}
+
+.badge {
+  padding: var(--space-1) var(--space-3);
+  border-radius: var(--radius-full);
+  font-size: 0.78rem;
+  font-weight: 700;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.badgeTrial {
+  background: #fff8e1;
+  color: #7a5c00;
+}
+
+.badgeActive {
+  background: var(--color-cta-light);
+  color: var(--color-cta-dark);
+}
+
+.badgeExpired {
+  background: var(--color-danger-bg);
+  color: var(--color-danger);
+}
+
+/* Plan */
+.planCard {
+  background: #fff;
+  border: 1.5px solid var(--color-cta);
+  border-radius: var(--radius-md);
+  padding: var(--space-5);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.planHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-4);
+}
+
+.planName {
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+
+.planDesc {
+  font-size: 0.8rem;
+  color: var(--color-text-2);
+  margin-top: 2px;
+}
+
+.planPrice {
+  text-align: right;
+  flex-shrink: 0;
+}
+
+.priceAmount {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--color-cta-dark);
+}
+
+.pricePeriod {
+  font-size: 0.8rem;
+  color: var(--color-text-2);
+}
+
+.features {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.features li {
+  font-size: 0.875rem;
+  color: var(--color-text-2);
+}
+
+/* Pago */
+.payCard {
+  background: #fff;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: var(--space-5);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.payTitle {
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.payDesc {
+  font-size: 0.9rem;
+  color: var(--color-text-2);
+  line-height: 1.6;
+}
+
+.payMethods {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-3);
+}
+
+.payMethod {
+  background: var(--color-surface);
+  border-radius: var(--radius-md);
+  padding: var(--space-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  font-size: 0.8rem;
+  color: var(--color-text-2);
+}
+
+.payMethod strong {
+  font-size: 0.875rem;
+  color: var(--color-text);
+  margin-bottom: var(--space-1);
+}
+
+/* Formulario */
+.label {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.input {
+  padding: var(--space-3) var(--space-4);
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-md);
+  font-size: 0.9375rem;
+  color: var(--color-text);
+  background: var(--color-bg);
+  outline: none;
+  transition: border-color var(--transition);
+  width: 100%;
+}
+
+.input:focus {
+  border-color: var(--color-cta);
+}
+
+.fileInput {
+  padding: var(--space-2);
+  border: 1.5px dashed var(--color-border);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  font-size: 0.875rem;
+}
+
+.fileName {
+  font-size: 0.78rem;
+  color: var(--color-cta-dark);
+}
+
+.optional {
+  font-size: 0.78rem;
+  color: var(--color-text-3);
+  font-weight: 400;
+}
+
+.error {
+  font-size: 0.85rem;
+  color: var(--color-danger);
+  background: var(--color-danger-bg);
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-sm);
+}
+
+.formBtns {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-3);
+}
+
+/* Enviado */
+.sentCard {
+  background: #fff;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: var(--space-7) var(--space-5);
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.sentIcon { font-size: 3rem; }
+
+.sentTitle {
+  font-size: 1.3rem;
+  font-weight: 700;
+}
+
+.sentText {
+  font-size: 0.9375rem;
+  color: var(--color-text-2);
+  line-height: 1.6;
+  max-width: 360px;
+}
+
+@media (max-width: 480px) {
+  .payMethods {
+    grid-template-columns: 1fr;
+  }
+}

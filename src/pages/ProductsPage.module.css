@@ -1,0 +1,230 @@
+/* src/pages/ProductsPage.module.css */
+
+.page {
+  max-width: 1100px;
+  margin-inline: auto;
+  padding: var(--space-6) var(--space-5);
+}
+
+.center {
+  display: flex;
+  justify-content: center;
+  padding: var(--space-8);
+  color: var(--color-text-2);
+}
+
+/* Header */
+.header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-4);
+  margin-bottom: var(--space-5);
+  flex-wrap: wrap;
+}
+
+.title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: -0.3px;
+}
+
+.count {
+  color: var(--color-text-2);
+  font-size: 0.875rem;
+  margin-top: 2px;
+}
+
+/* Filtros */
+.filters {
+  display: flex;
+  gap: var(--space-3);
+  margin-bottom: var(--space-5);
+  flex-wrap: wrap;
+}
+
+.search {
+  flex: 1;
+  min-width: 200px;
+  padding: var(--space-3) var(--space-4);
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-md);
+  font-size: 0.9rem;
+  background: var(--color-bg);
+  color: var(--color-text);
+  outline: none;
+  transition: border-color var(--transition);
+}
+
+.search:focus {
+  border-color: var(--color-cta);
+}
+
+.select {
+  padding: var(--space-3) var(--space-4);
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-md);
+  font-size: 0.9rem;
+  background: var(--color-bg);
+  color: var(--color-text);
+  outline: none;
+  cursor: pointer;
+  transition: border-color var(--transition);
+}
+
+.select:focus {
+  border-color: var(--color-cta);
+}
+
+/* Empty */
+.empty {
+  text-align: center;
+  padding: var(--space-8) var(--space-5);
+  color: var(--color-text-2);
+  font-size: 0.9375rem;
+  border: 1.5px dashed var(--color-border);
+  border-radius: var(--radius-lg);
+}
+
+/* Grid de productos */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: var(--space-4);
+}
+
+.card {
+  background: #fff;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  transition: box-shadow var(--transition);
+}
+
+.card:hover {
+  box-shadow: var(--shadow-md);
+}
+
+.cardInactive {
+  opacity: 0.6;
+}
+
+/* Imagen */
+.imgWrap {
+  position: relative;
+  aspect-ratio: 1;
+  background: var(--color-surface);
+}
+
+.img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.imgPlaceholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.5rem;
+  color: var(--color-text-3);
+}
+
+.badge {
+  position: absolute;
+  top: var(--space-2);
+  left: var(--space-2);
+  padding: 2px var(--space-2);
+  border-radius: var(--radius-full);
+  font-size: 0.72rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity var(--transition);
+  border: none;
+}
+
+.badge:hover { opacity: 0.85; }
+
+.badgeOn {
+  background: var(--color-cta-light);
+  color: var(--color-cta-dark);
+}
+
+.badgeOff {
+  background: var(--color-surface-2);
+  color: var(--color-text-2);
+}
+
+/* Info */
+.info {
+  padding: var(--space-3) var(--space-4) var(--space-2);
+}
+
+.name {
+  font-weight: 600;
+  font-size: 0.9375rem;
+  line-height: 1.3;
+}
+
+.cat {
+  font-size: 0.78rem;
+  color: var(--color-text-3);
+  margin-top: 2px;
+}
+
+.price {
+  font-weight: 700;
+  color: var(--color-cta-dark);
+  margin-top: var(--space-1);
+  font-size: 1rem;
+}
+
+/* Acciones */
+.actions {
+  display: flex;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4) var(--space-3);
+}
+
+.actions .btn {
+  flex: 1;
+  font-size: 0.8rem;
+  padding: var(--space-2) var(--space-3);
+}
+
+/* Overlay confirm */
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  padding: var(--space-5);
+}
+
+.confirm {
+  background: #fff;
+  border-radius: var(--radius-lg);
+  padding: var(--space-6);
+  max-width: 380px;
+  width: 100%;
+  box-shadow: var(--shadow-lg);
+  text-align: center;
+}
+
+.confirm p {
+  margin-bottom: var(--space-5);
+  color: var(--color-text);
+  font-size: 0.9375rem;
+  line-height: 1.5;
+}
+
+.confirmBtns {
+  display: flex;
+  gap: var(--space-3);
+  justify-content: center;
+}

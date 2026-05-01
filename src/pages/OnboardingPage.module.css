@@ -1,0 +1,232 @@
+/* src/pages/OnboardingPage.module.css */
+
+.page {
+  min-height: 100dvh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-5);
+  background: var(--color-bg);
+}
+
+.card {
+  width: 100%;
+  max-width: 480px;
+  background: #fff;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-7) var(--space-6);
+  box-shadow: var(--shadow-md);
+}
+
+/* Header */
+.header {
+  text-align: center;
+  margin-bottom: var(--space-6);
+}
+
+.logo {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--color-cta);
+  letter-spacing: -0.5px;
+}
+
+.subtitle {
+  margin-top: var(--space-1);
+  color: var(--color-text-2);
+  font-size: 0.9rem;
+}
+
+/* Stepper */
+.stepper {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  margin-bottom: var(--space-6);
+  gap: 0;
+}
+
+.stepItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  flex: 1;
+}
+
+.stepDot {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 2px solid var(--color-border-2);
+  background: var(--color-surface);
+  color: var(--color-text-3);
+  font-size: 0.8rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition);
+  position: relative;
+  z-index: 1;
+}
+
+.dotActive {
+  border-color: var(--color-cta);
+  background: var(--color-cta);
+  color: #fff;
+}
+
+.stepLabel {
+  font-size: 0.75rem;
+  color: var(--color-text-3);
+  margin-top: var(--space-1);
+  white-space: nowrap;
+}
+
+.labelActive {
+  color: var(--color-text);
+  font-weight: 600;
+}
+
+.stepLine {
+  position: absolute;
+  top: 16px;
+  left: 50%;
+  width: 100%;
+  height: 2px;
+  background: var(--color-border);
+  z-index: 0;
+}
+
+.lineActive {
+  background: var(--color-cta);
+}
+
+/* Campos */
+.fields {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+.label {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--color-text);
+}
+
+.input {
+  padding: var(--space-3) var(--space-4);
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-md);
+  font-size: 0.9375rem;
+  color: var(--color-text);
+  background: var(--color-bg);
+  transition: border-color var(--transition);
+  outline: none;
+  width: 100%;
+}
+
+.input:focus {
+  border-color: var(--color-cta);
+}
+
+.input option {
+  color: var(--color-text);
+}
+
+/* WhatsApp prefix */
+.prefixWrap {
+  display: flex;
+  align-items: center;
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  transition: border-color var(--transition);
+}
+
+.prefixWrap:focus-within {
+  border-color: var(--color-cta);
+}
+
+.prefix {
+  padding: var(--space-3) var(--space-3);
+  background: var(--color-surface);
+  color: var(--color-text-2);
+  font-size: 0.875rem;
+  font-weight: 500;
+  border-right: 1.5px solid var(--color-border);
+  white-space: nowrap;
+}
+
+.inputPrefixed {
+  border: none;
+  border-radius: 0;
+  flex: 1;
+}
+
+.inputPrefixed:focus {
+  border-color: transparent;
+}
+
+.hint {
+  font-size: 0.78rem;
+  color: var(--color-text-3);
+  font-weight: 400;
+}
+
+.optional {
+  font-size: 0.78rem;
+  color: var(--color-text-3);
+  font-weight: 400;
+}
+
+/* Botones */
+.btnFull {
+  width: 100%;
+  justify-content: center;
+}
+
+.btnRow {
+  display: flex;
+  gap: var(--space-3);
+  justify-content: flex-end;
+}
+
+/* Error */
+.error {
+  font-size: 0.85rem;
+  color: var(--color-danger);
+  background: var(--color-danger-bg);
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-sm);
+}
+
+/* Éxito */
+.success {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.successIcon {
+  font-size: 3rem;
+}
+
+.successTitle {
+  font-size: 1.4rem;
+  font-weight: 700;
+}
+
+.successText {
+  color: var(--color-text-2);
+  font-size: 0.9375rem;
+  line-height: 1.6;
+}

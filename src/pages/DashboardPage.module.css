@@ -1,0 +1,277 @@
+/* src/pages/DashboardPage.module.css */
+
+.page {
+  min-height: 100dvh;
+  background: var(--color-bg);
+}
+
+.center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100dvh;
+}
+
+.noStore {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  color: var(--color-text-2);
+}
+
+.spinner {
+  display: block;
+  width: 36px;
+  height: 36px;
+  border: 3px solid var(--color-border);
+  border-top-color: var(--color-cta);
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* Topbar */
+.topbar {
+  background: #fff;
+  border-bottom: 1px solid var(--color-border);
+  padding: var(--space-4) var(--space-5);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.brand {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--color-cta);
+  letter-spacing: -0.3px;
+}
+
+.topbarRight {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.storeName {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--color-text-2);
+}
+
+/* Container */
+.container {
+  max-width: 960px;
+  margin-inline: auto;
+  padding: var(--space-6) var(--space-5);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+/* Banners */
+.banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  padding: var(--space-3) var(--space-5);
+  border-radius: var(--radius-md);
+  font-size: 0.875rem;
+  font-weight: 500;
+  flex-wrap: wrap;
+}
+
+.bannerTrial {
+  background: #fff8e1;
+  color: #7a5c00;
+  border: 1px solid #f5cc5a;
+}
+
+.bannerExpired {
+  background: var(--color-danger-bg);
+  color: var(--color-danger);
+  border: 1px solid #f5c6c2;
+}
+
+.bannerLink {
+  font-weight: 700;
+  text-decoration: underline;
+  white-space: nowrap;
+}
+
+/* Catálogo card */
+.catalogCard {
+  background: #fff;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: var(--space-5);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-5);
+  flex-wrap: wrap;
+}
+
+.catalogInfo {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  min-width: 0;
+}
+
+.catalogLabel {
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--color-text-2);
+}
+
+.catalogUrl {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--color-cta-dark);
+  word-break: break-all;
+}
+
+.catalogUrl:hover {
+  text-decoration: underline;
+}
+
+.catalogActions {
+  display: flex;
+  gap: var(--space-2);
+  flex-shrink: 0;
+  flex-wrap: wrap;
+}
+
+.copyBtn {
+  font-size: 0.875rem;
+  min-width: 110px;
+}
+
+/* Stats */
+.statsGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-4);
+}
+
+.statCard {
+  background: #fff;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: var(--space-5) var(--space-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.statIcon {
+  font-size: 1.4rem;
+  line-height: 1;
+}
+
+.statValue {
+  font-size: 1.75rem;
+  font-weight: 700;
+  line-height: 1.1;
+  margin-top: var(--space-2);
+  letter-spacing: -0.5px;
+}
+
+.statValueSmall {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-top: var(--space-1);
+}
+
+.statLabel {
+  font-size: 0.8rem;
+  color: var(--color-text-2);
+  font-weight: 500;
+}
+
+.statSub {
+  font-size: 0.75rem;
+  color: var(--color-text-3);
+}
+
+/* Acciones rápidas */
+.sectionTitle {
+  font-size: 1rem;
+  font-weight: 700;
+  margin-bottom: var(--space-3);
+}
+
+.actionGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-3);
+}
+
+.actionCard {
+  background: #fff;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: var(--space-5) var(--space-4);
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  cursor: pointer;
+  transition: all var(--transition);
+  text-decoration: none;
+  color: var(--color-text);
+}
+
+.actionCard:hover {
+  border-color: var(--color-cta);
+  box-shadow: var(--shadow-sm);
+  transform: translateY(-1px);
+}
+
+.actionIcon {
+  font-size: 1.4rem;
+  flex-shrink: 0;
+}
+
+.actionLabel {
+  font-size: 0.9rem;
+  font-weight: 600;
+  flex: 1;
+}
+
+.actionArrow {
+  font-size: 1rem;
+  color: var(--color-text-3);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .statsGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .actionGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .catalogCard {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+@media (max-width: 480px) {
+  .statsGrid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .topbarRight .storeName {
+    display: none;
+  }
+}
