@@ -10,6 +10,7 @@ const APP_URL = import.meta.env.VITE_APP_URL || '';
 export default function DashboardPage() {
   const { getToken, signOut } = useAuth();
   const { store, loading: storeLoading } = useStore();
+  if (error) return <div style={{color:'red', padding:'2rem'}}>Error: {error}</div>;
 
   const [stats, setStats]       = useState(null);
   const [statsLoading, setStatsLoading] = useState(true);
