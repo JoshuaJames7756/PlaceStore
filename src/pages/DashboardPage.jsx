@@ -9,7 +9,7 @@ const APP_URL = import.meta.env.VITE_APP_URL || '';
 
 export default function DashboardPage() {
   const { getToken, signOut } = useAuth();
-  const { store, loading: storeLoading } = useStore();
+  const { store, loading: storeLoading, error } = useStore();
 
   const [stats, setStats]       = useState(null);
   const [statsLoading, setStatsLoading] = useState(true);
@@ -29,6 +29,10 @@ export default function DashboardPage() {
 
   if (storeLoading) {
     return <div className={styles.center}><span className={styles.spinner} /></div>;
+  }
+
+  if (error) {
+  return <div style={{ color: 'red', padding: '2rem' }}>Error: {error}</div>;
   }
 
   if (!store) {
@@ -90,7 +94,7 @@ export default function DashboardPage() {
               {copied ? '✓ Copiado' : 'Copiar enlace'}
             </button>
             <a
-              href={`https://wa.me/?text=${encodeURIComponent(`Mira mi catálogo: ${catalogUrl}`)}`}
+              href={'https://wa.me/?text=' + encodeURIComponent('Mira mi catalogo: ' + catalogUrl)}
               target="_blank"
               rel="noreferrer"
               className="btn btn-primary"
