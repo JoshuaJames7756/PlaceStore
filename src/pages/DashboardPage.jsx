@@ -9,12 +9,11 @@ const APP_URL = import.meta.env.VITE_APP_URL || '';
 
 export default function DashboardPage() {
   const { getToken, signOut } = useAuth();
-  const { store, loading: storeLoading } = useStore();
-  if (error) return <div style={{color:'red', padding:'2rem'}}>Error: {error}</div>;
+  const { store, loading: storeLoading, error } = useStore();
 
-  const [stats, setStats]       = useState(null);
+  const [stats, setStats]             = useState(null);
   const [statsLoading, setStatsLoading] = useState(true);
-  const [copied, setCopied]     = useState(false);
+  const [copied, setCopied]           = useState(false);
 
   useEffect(() => {
     if (!store) return;
@@ -28,8 +27,13 @@ export default function DashboardPage() {
       .finally(() => setStatsLoading(false));
   }, [store]);
 
+  // ─── Early returns DESPUÉS de todos los hooks ───
   if (storeLoading) {
     return <div className={styles.center}><span className={styles.spinner} /></div>;
+  }
+
+  if (error) {
+    return <div style={{ color: 'red', padding: '2rem' }}>Error: {error}</div>;
   }
 
   if (!store) {
@@ -43,7 +47,7 @@ export default function DashboardPage() {
     );
   }
 
-  const catalogUrl   = `${APP_URL}/tienda/${store.slug}`;
+  const catalogUrl    = `${APP_URL}/tienda/${store.slug}`;
   const diasRestantes = store.trial_expires
     ? Math.max(0, Math.ceil((new Date(store.trial_expires) - Date.now()) / 86400000))
     : null;
@@ -64,7 +68,11 @@ export default function DashboardPage() {
         <span className={styles.brand}>PlaceStore</span>
         <div className={styles.topbarRight}>
           <span className={styles.storeName}>{store.store_name}</span>
-          <button className="btn btn-ghost" onClick={() => signOut()} style={{ fontSize: '0.8rem', padding: '6px 12px' }}>
+          <button
+            className="btn btn-ghost"
+            onClick={() => signOut()}
+            style={{ fontSize: '0.8rem', padding: '6px 12px' }}
+          >
             Salir
           </button>
         </div>
@@ -90,7 +98,7 @@ export default function DashboardPage() {
             >
               {copied ? '✓ Copiado' : 'Copiar enlace'}
             </button>
-            <a
+            
               href={`https://wa.me/?text=${encodeURIComponent(`Mira mi catálogo: ${catalogUrl}`)}`}
               target="_blank"
               rel="noreferrer"
@@ -145,7 +153,7 @@ export default function DashboardPage() {
               <span className={styles.actionLabel}>Mi suscripción</span>
               <span className={styles.actionArrow}>→</span>
             </Link>
-            <a
+            
               href={catalogUrl}
               target="_blank"
               rel="noreferrer"
@@ -171,7 +179,9 @@ function SubBanner({ status, diasRestantes }) {
   if (status === 'trial') {
     return (
       <div className={`${styles.banner} ${styles.bannerTrial}`}>
-        <span>🕐 Período de prueba — {diasRestantes} día{diasRestantes !== 1 ? 's' : ''} restante{diasRestantes !== 1 ? 's' : ''}</span>
+        <span>
+          🕐 Período de prueba — {diasRestantes} día{diasRestantes !== 1 ? 's' : ''} restante{diasRestantes !== 1 ? 's' : ''}
+        </span>
         <Link to="/dashboard/suscripcion" className={styles.bannerLink}>Activar plan →</Link>
       </div>
     );
