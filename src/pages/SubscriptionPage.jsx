@@ -97,7 +97,7 @@ export default function SubscriptionPage() {
             <p className={styles.payDesc}>Realiza el pago de <strong>Bs {PRECIO_BS}</strong> por QR o transferencia bancaria, luego envíanos el comprobante y activamos tu plan en menos de 24 horas.</p>
             <div className={styles.payMethods}>
               <div className={styles.payMethod}>
-                <strong>QR (Tigo Money / Banco)</strong>
+                <strong>QR (QR)</strong>
                 <img
                   src="https://res.cloudinary.com/jvsoftware/image/upload/v1777738268/QR_crcgcx.jpg"
                   alt="QR de pago"
