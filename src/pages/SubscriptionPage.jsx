@@ -97,9 +97,13 @@ export default function SubscriptionPage() {
             <p className={styles.payDesc}>Realiza el pago de <strong>Bs {PRECIO_BS}</strong> por QR o transferencia bancaria, luego envíanos el comprobante y activamos tu plan en menos de 24 horas.</p>
             <div className={styles.payMethods}>
               <div className={styles.payMethod}>
-                <strong>QR</strong>
-                <span>Número: <strong>74328155</strong></span>
-                <span>Titular: PlaceStore</span>
+                <strong>QR (Tigo Money / Banco)</strong>
+                <img
+                  src="https://res.cloudinary.com/jvsoftware/image/upload/v1777738268/QR_crcgcx.jpg"
+                  alt="QR de pago"
+                  style={{ width: '160px', borderRadius: '8px', marginTop: '8px' }}
+                />
+                <span style={{ fontSize: '0.75rem', marginTop: '4px' }}>Escanea con tu app bancaria</span>
               </div>
               <div className={styles.payMethod}>
                 <strong>Transferencia bancaria</strong>

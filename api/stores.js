@@ -85,7 +85,7 @@ export default async function handler(req, res) {
 
     const baseSlug     = slugify(store_name);
     const slug         = await generarSlugUnico(baseSlug);
-    const trialExpires = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
+    const trialExpires = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
 
     try {
       const [store] = await sql`
