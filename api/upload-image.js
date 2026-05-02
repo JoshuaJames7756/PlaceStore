@@ -13,7 +13,6 @@ export default async function handler(req, res) {
   formData.append('file', file);
   formData.append('upload_preset', uploadPreset);
   formData.append('folder', 'placestore/products');
-  formData.append('transformation', 'f_auto,q_auto,w_1200');
 
   const cloudRes = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`, {
     method: 'POST',
