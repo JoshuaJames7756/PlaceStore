@@ -98,11 +98,22 @@ export default function SubscriptionPage() {
             <div className={styles.payMethods}>
               <div className={styles.payMethod}>
                 <strong>QR (BCP)</strong>
-                <img
-                  src="https://res.cloudinary.com/jvsoftware/image/upload/v1777738268/QR_crcgcx.jpg"
-                  alt="QR de pago"
-                  style={{ width: '160px', borderRadius: '8px', marginTop: '8px' }}
-                />
+                <a href="https://res.cloudinary.com/jvsoftware/image/upload/v1777738268/QR_crcgcx.jpg" download="qr-placestore.jpg" target="_blank" rel="noreferrer">
+                  <img
+                    src="https://res.cloudinary.com/jvsoftware/image/upload/v1777738268/QR_crcgcx.jpg"
+                    alt="QR de pago"
+                    style={{ width: '240px', borderRadius: '8px', marginTop: '8px', display: 'block' }}
+                  />
+                </a>
+                
+                  href="https://res.cloudinary.com/jvsoftware/image/upload/v1777738268/QR_crcgcx.jpg"
+                  download="qr-placestore.jpg"
+                  target="_blank"
+                  rel="noreferrer"
+                  style={{ fontSize: '0.8rem', fontWeight: '600', color: 'var(--color-cta-dark)', marginTop: '6px' }}
+                >
+                  ⬇ Descargar QR
+                </a>
                 <span style={{ fontSize: '0.75rem', marginTop: '4px' }}>Escanea con tu app bancaria</span>
               </div>
               <div className={styles.payMethod}>
