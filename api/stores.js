@@ -5,6 +5,9 @@ import { verificarClerk } from './_lib/clerk.js';
 const sql = neon(process.env.DATABASE_URL);
 
 export default async function handler(req) {
+  console.log('🔵 stores POST iniciado');
+  console.log('🔵 DATABASE_URL existe:', !!process.env.DATABASE_URL);
+
   if (req.method !== 'POST') {
     return Response.json({ error: 'Método no permitido' }, { status: 405 });
   }
@@ -12,7 +15,9 @@ export default async function handler(req) {
   let userId;
   try {
     ({ userId } = verificarClerk(req));
+    console.log('🟢 userId:', userId);
   } catch (err) {
+    console.log('🔴 Clerk error:', err.message);
     return Response.json({ error: err.message }, { status: 401 });
   }
 
