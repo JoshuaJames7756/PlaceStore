@@ -23,7 +23,6 @@ export default async function handler(req) {
   const existing = await sql`SELECT id FROM stores WHERE clerk_id = ${userId} LIMIT 1`;
   console.log('🟢 existing check ok, filas:', existing.length);
 
-  const existing = await sql`SELECT id FROM stores WHERE clerk_id = ${userId} LIMIT 1`;
   if (existing.length) {
     return Response.json({ error: 'Ya tienes una tienda registrada' }, { status: 409 });
   }
@@ -34,18 +33,21 @@ export default async function handler(req) {
   }
 
   const { store_name, whatsapp_number, location_city, logo_url } = body;
-
   const CIUDADES = ['Cochabamba', 'Santa Cruz', 'La Paz', 'Oruro', 'Potosí', 'Sucre', 'Tarija', 'Beni', 'Pando'];
 
   if (!store_name?.trim())      return Response.json({ error: 'Nombre de tienda requerido' }, { status: 400 });
   if (!whatsapp_number?.trim()) return Response.json({ error: 'Número de WhatsApp requerido' }, { status: 400 });
   if (!CIUDADES.includes(location_city)) return Response.json({ error: 'Ciudad inválida' }, { status: 400 });
 
+  console.log('🔵 Generando slug...');
   const baseSlug = slugify(store_name);
   const slug     = await generarSlugUnico(baseSlug);
+  console.log('🟢 slug:', slug);
+
   const trialExpires = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
 
   try {
+    console.log('🔵 Insertando tienda...');
     const [store] = await sql`
       WITH nueva_tienda AS (
         INSERT INTO stores (clerk_id, slug, store_name, whatsapp_number, location_city, logo_url, is_active, trial_expires)
@@ -58,9 +60,10 @@ export default async function handler(req) {
       )
       SELECT * FROM nueva_tienda
     `;
+    console.log('🟢 Tienda creada:', store.id);
     return Response.json({ store }, { status: 201 });
   } catch (err) {
-    console.error('[stores POST]', err);
+    console.error('🔴 DB error:', err.message);
     return Response.json({ error: 'Error al crear la tienda' }, { status: 500 });
   }
 }
@@ -71,9 +74,7 @@ function slugify(str) {
 
 async function generarSlugUnico(base) {
   const rows = await sql`
-    SELECT slug FROM stores
-    WHERE slug = ${base} OR slug LIKE ${base + '-%'}
-    ORDER BY slug
+    SELECT slug FROM stores WHERE slug = ${base} OR slug LIKE ${base + '-%'} ORDER BY slug
   `;
   if (!rows.length) return base;
   const usados = new Set(rows.map(r => r.slug));
