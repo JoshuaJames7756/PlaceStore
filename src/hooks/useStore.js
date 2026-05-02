@@ -3,15 +3,16 @@ import { useState, useEffect } from 'react';
 import { useAuth } from '@clerk/clerk-react';
 
 export function useStore() {
-  const { getToken, isSignedIn } = useAuth();
+  const { getToken, isSignedIn, isLoaded } = useAuth();
   const [store, setStore]       = useState(null);
   const [loading, setLoading]   = useState(true);
   const [error, setError]       = useState(null);
 
   useEffect(() => {
+    if (!isLoaded) return;           // ← agregar esta línea
     if (!isSignedIn) { setLoading(false); return; }
     fetchStore();
-  }, [isSignedIn]);
+  }, [isLoaded, isSignedIn]);
 
   async function fetchStore() {
     setLoading(true);
