@@ -1,5 +1,5 @@
 // src/pages/DashboardPage.jsx
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '@clerk/clerk-react';
 import { useStore } from '../hooks/useStore.js';
@@ -9,11 +9,13 @@ const APP_URL = import.meta.env.VITE_APP_URL || '';
 
 export default function DashboardPage() {
   const { getToken, signOut } = useAuth();
-  const { store, loading: storeLoading, error } = useStore();
+  const { store, loading: storeLoading, error, refetch } = useStore();
 
-  const [stats, setStats]       = useState(null);
+  const [stats, setStats]           = useState(null);
   const [statsLoading, setStatsLoading] = useState(true);
-  const [copied, setCopied]     = useState(false);
+  const [copied, setCopied]         = useState(false);
+  const [uploadingLogo, setUploadingLogo] = useState(false);
+  const logoRef                     = useRef(null);
 
   useEffect(() => {
     if (!store) return;
@@ -32,7 +34,7 @@ export default function DashboardPage() {
   }
 
   if (error) {
-  return <div style={{ color: 'red', padding: '2rem' }}>Error: {error}</div>;
+    return <div style={{ color: 'red', padding: '2rem' }}>Error: {error}</div>;
   }
 
   if (!store) {
@@ -46,7 +48,7 @@ export default function DashboardPage() {
     );
   }
 
-  const catalogUrl   = `${APP_URL}/tienda/${store.slug}`;
+  const catalogUrl    = `${APP_URL}/tienda/${store.slug}`;
   const diasRestantes = store.trial_expires
     ? Math.max(0, Math.ceil((new Date(store.trial_expires) - Date.now()) / 86400000))
     : null;
@@ -58,6 +60,41 @@ export default function DashboardPage() {
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     } catch {}
+  }
+
+  async function handleLogoChange(e) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (file.size > 5 * 1024 * 1024) { alert('La imagen no puede superar 5MB'); return; }
+
+    setUploadingLogo(true);
+    try {
+      // 1. Subir a Cloudinary
+      const base64 = await fileToBase64(file);
+      const token  = await getToken();
+      const upRes  = await fetch('/api/upload-image', {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+        body:    JSON.stringify({ file: base64 }),
+      });
+      const upData = await upRes.json();
+      if (!upRes.ok) throw new Error(upData.error || 'Error al subir imagen');
+
+      // 2. Guardar URL en la tienda
+      const updateRes = await fetch('/api/stores/update', {
+        method:  'PATCH',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+        body:    JSON.stringify({ logo_url: upData.url }),
+      });
+      if (!updateRes.ok) throw new Error('Error al guardar logo');
+
+      await refetch();
+    } catch (err) {
+      alert(err.message);
+    } finally {
+      setUploadingLogo(false);
+      e.target.value = '';
+    }
   }
 
   return (
@@ -78,6 +115,33 @@ export default function DashboardPage() {
         {/* Banner suscripción */}
         <SubBanner status={subStatus} diasRestantes={diasRestantes} />
 
+        {/* Perfil de tienda */}
+        <div className={styles.storeProfile}>
+          <div className={styles.logoWrap} onClick={() => logoRef.current?.click()}>
+            {uploadingLogo ? (
+              <div className={styles.logoLoading}><span className={styles.spinner} /></div>
+            ) : store.logo_url ? (
+              <>
+                <img src={store.logo_url} alt={store.store_name} className={styles.logoImg} />
+                <div className={styles.logoOverlay}>Cambiar</div>
+              </>
+            ) : (
+              <div className={styles.logoFallback}>
+                {store.store_name[0]}
+                <div className={styles.logoOverlay}>+ Logo</div>
+              </div>
+            )}
+          </div>
+          <input ref={logoRef} type="file" accept="image/*" style={{ display: 'none' }} onChange={handleLogoChange} />
+          <div className={styles.storeInfo}>
+            <p className={styles.storeNameBig}>{store.store_name}</p>
+            <p className={styles.storeCity}>📍 {store.location_city}</p>
+            <p className={styles.logoHint}>
+              {store.logo_url ? 'Haz clic en el logo para cambiarlo' : 'Haz clic para agregar tu logo'}
+            </p>
+          </div>
+        </div>
+
         {/* Enlace catálogo */}
         <div className={styles.catalogCard}>
           <div className={styles.catalogInfo}>
@@ -87,14 +151,11 @@ export default function DashboardPage() {
             </a>
           </div>
           <div className={styles.catalogActions}>
-            <button
-              className={`btn btn-ghost ${styles.copyBtn}`}
-              onClick={copiarEnlace}
-            >
+            <button className={`btn btn-ghost ${styles.copyBtn}`} onClick={copiarEnlace}>
               {copied ? '✓ Copiado' : 'Copiar enlace'}
             </button>
             <a
-              href={'https://wa.me/?text=' + encodeURIComponent('Mira mi catalogo: ' + catalogUrl)}
+              href={'https://wa.me/?text=' + encodeURIComponent('Mira mi catálogo: ' + catalogUrl)}
               target="_blank"
               rel="noreferrer"
               className="btn btn-primary"
@@ -107,31 +168,10 @@ export default function DashboardPage() {
 
         {/* Stats */}
         <div className={styles.statsGrid}>
-          <StatCard
-            label="Productos activos"
-            value={statsLoading ? '—' : stats?.available_products ?? 0}
-            icon="📦"
-            sub={statsLoading ? '' : `${stats?.total_products ?? 0} en total`}
-          />
-          <StatCard
-            label="Vistas al catálogo"
-            value={statsLoading ? '—' : stats?.total_views ?? 0}
-            icon="👁️"
-            sub="desde el inicio"
-          />
-          <StatCard
-            label="Categorías"
-            value={statsLoading ? '—' : stats?.total_categories ?? 0}
-            icon="🗂️"
-            sub="creadas"
-          />
-          <StatCard
-            label="Producto más visto"
-            value={statsLoading ? '—' : stats?.top_product?.name || 'Sin datos'}
-            icon="🏆"
-            sub={stats?.top_product ? `${stats.top_product.views_count} vistas` : ''}
-            small
-          />
+          <StatCard label="Productos activos" value={statsLoading ? '—' : stats?.available_products ?? 0} icon="📦" sub={statsLoading ? '' : `${stats?.total_products ?? 0} en total`} />
+          <StatCard label="Vistas al catálogo" value={statsLoading ? '—' : stats?.total_views ?? 0} icon="👁️" sub="desde el inicio" />
+          <StatCard label="Categorías" value={statsLoading ? '—' : stats?.total_categories ?? 0} icon="🗂️" sub="creadas" />
+          <StatCard label="Producto más visto" value={statsLoading ? '—' : stats?.top_product?.name || 'Sin datos'} icon="🏆" sub={stats?.top_product ? `${stats.top_product.views_count} vistas` : ''} small />
         </div>
 
         {/* Acciones rápidas */}
@@ -148,12 +188,7 @@ export default function DashboardPage() {
               <span className={styles.actionLabel}>Mi suscripción</span>
               <span className={styles.actionArrow}>→</span>
             </Link>
-            <a
-              href={catalogUrl}
-              target="_blank"
-              rel="noreferrer"
-              className={styles.actionCard}
-            >
+            <a href={catalogUrl} target="_blank" rel="noreferrer" className={styles.actionCard}>
               <span className={styles.actionIcon}>🛍️</span>
               <span className={styles.actionLabel}>Ver mi vitrina</span>
               <span className={styles.actionArrow}>↗</span>
@@ -170,7 +205,6 @@ export default function DashboardPage() {
 
 function SubBanner({ status, diasRestantes }) {
   if (status === 'active') return null;
-
   if (status === 'trial') {
     return (
       <div className={`${styles.banner} ${styles.bannerTrial}`}>
@@ -179,7 +213,6 @@ function SubBanner({ status, diasRestantes }) {
       </div>
     );
   }
-
   return (
     <div className={`${styles.banner} ${styles.bannerExpired}`}>
       <span>⚠️ Tu suscripción ha vencido. Tu catálogo no está visible.</span>
@@ -197,4 +230,13 @@ function StatCard({ label, value, icon, sub, small }) {
       {sub && <p className={styles.statSub}>{sub}</p>}
     </div>
   );
+}
+
+function fileToBase64(file) {
+  return new Promise((res, rej) => {
+    const r = new FileReader();
+    r.onload  = () => res(r.result);
+    r.onerror = () => rej(new Error('Error al leer archivo'));
+    r.readAsDataURL(file);
+  });
 }

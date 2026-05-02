@@ -1,6 +1,7 @@
 // src/pages/OnboardingPage.jsx
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '@clerk/clerk-react';
 import { useStore } from '../hooks/useStore.js';
 import styles from './OnboardingPage.module.css';
 
@@ -14,10 +15,14 @@ const STEPS = ['Tu tienda', 'Contacto', 'Listo'];
 export default function OnboardingPage() {
   const navigate        = useNavigate();
   const { crearTienda } = useStore();
+  const { getToken }    = useAuth();
+  const fileRef         = useRef(null);
 
-  const [step, setStep]     = useState(0);
-  const [loading, setLoading] = useState(false);
-  const [error, setError]   = useState('');
+  const [step, setStep]         = useState(0);
+  const [loading, setLoading]   = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const [error, setError]       = useState('');
+  const [logoPreview, setLogoPreview] = useState(null);
 
   const [form, setForm] = useState({
     store_name:      '',
@@ -31,6 +36,33 @@ export default function OnboardingPage() {
     setError('');
   }
 
+  async function handleLogoFile(e) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (file.size > 5 * 1024 * 1024) { setError('La imagen no puede superar 5MB'); return; }
+
+    setUploading(true);
+    setError('');
+    try {
+      const base64 = await fileToBase64(file);
+      const token  = await getToken();
+      const res    = await fetch('/api/upload-image', {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+        body:    JSON.stringify({ file: base64 }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Error al subir imagen');
+      setForm(prev => ({ ...prev, logo_url: data.url }));
+      setLogoPreview(data.url);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setUploading(false);
+      e.target.value = '';
+    }
+  }
+
   function validarStep0() {
     if (!form.store_name.trim()) return 'Ingresa el nombre de tu tienda';
     if (!form.location_city)     return 'Selecciona tu ciudad';
@@ -39,7 +71,7 @@ export default function OnboardingPage() {
 
   function validarStep1() {
     const digits = form.whatsapp_number.replace(/\D/g, '');
-    if (!digits)        return 'Ingresa tu número de WhatsApp';
+    if (!digits)           return 'Ingresa tu número de WhatsApp';
     if (digits.length < 8) return 'Número demasiado corto';
     return null;
   }
@@ -151,24 +183,36 @@ export default function OnboardingPage() {
               <small className={styles.hint}>Los clientes te escribirán a este número</small>
             </label>
 
-            <label className={styles.label}>
-              Logo de tu tienda <span className={styles.optional}>(opcional)</span>
+            {/* Logo picker */}
+            <div className={styles.label}>
+              <span>Logo de tu tienda <span className={styles.optional}>(opcional)</span></span>
+              <div className={styles.logoPicker} onClick={() => fileRef.current?.click()}>
+                {logoPreview ? (
+                  <img src={logoPreview} alt="Logo" className={styles.logoPreview} />
+                ) : (
+                  <div className={styles.logoPlaceholder}>
+                    {uploading ? <span className={styles.uploadSpinner} /> : <span>＋ Subir logo</span>}
+                  </div>
+                )}
+                {logoPreview && !uploading && (
+                  <div className={styles.logoOverlay}>Cambiar</div>
+                )}
+              </div>
               <input
-                className={styles.input}
-                name="logo_url"
-                value={form.logo_url}
-                onChange={handleChange}
-                placeholder="https://... (URL de imagen)"
-                type="url"
+                ref={fileRef}
+                type="file"
+                accept="image/*"
+                style={{ display: 'none' }}
+                onChange={handleLogoFile}
               />
               <small className={styles.hint}>También puedes agregarlo desde tu panel</small>
-            </label>
+            </div>
 
             {error && <p className={styles.error}>{error}</p>}
 
             <div className={styles.btnRow}>
               <button className="btn btn-ghost" onClick={() => setStep(0)}>← Atrás</button>
-              <button className="btn btn-primary" onClick={handleSubmit} disabled={loading}>
+              <button className="btn btn-primary" onClick={handleSubmit} disabled={loading || uploading}>
                 {loading ? 'Creando...' : 'Crear mi tienda'}
               </button>
             </div>
@@ -196,4 +240,13 @@ export default function OnboardingPage() {
       </div>
     </div>
   );
+}
+
+function fileToBase64(file) {
+  return new Promise((res, rej) => {
+    const r = new FileReader();
+    r.onload  = () => res(r.result);
+    r.onerror = () => rej(new Error('Error al leer archivo'));
+    r.readAsDataURL(file);
+  });
 }
