@@ -1,53 +1,41 @@
 // src/pages/FeedPage.jsx
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import styles from './FeedPage.module.css';
 
-const CIUDADES = [
-  'Todas', 'Cochabamba', 'Santa Cruz', 'La Paz', 'Oruro',
-  'Potosí', 'Sucre', 'Tarija', 'Beni', 'Pando',
-];
+const CIUDADES = ['Todas', 'Cochabamba', 'Santa Cruz', 'La Paz', 'Oruro', 'Potosí', 'Sucre', 'Tarija', 'Beni', 'Pando'];
 
 export default function FeedPage() {
-  const [products, setProducts]   = useState([]);
-  const [loading, setLoading]     = useState(true);
+  const [products, setProducts]       = useState([]);
+  const [loading, setLoading]         = useState(true);
   const [loadingMore, setLoadingMore] = useState(false);
-  const [pagination, setPagination]  = useState(null);
-  const [city, setCity]           = useState('');
-  const [q, setQ]                 = useState('');
-  const [inputQ, setInputQ]       = useState('');
-  const loaderRef                 = useRef(null);
+  const [pagination, setPagination]   = useState(null);
+  const [city, setCity]               = useState('');
+  const [q, setQ]                     = useState('');
+  const [inputQ, setInputQ]           = useState('');
+  const loaderRef                     = useRef(null);
 
-  // Debounce búsqueda
   useEffect(() => {
     const t = setTimeout(() => setQ(inputQ), 400);
     return () => clearTimeout(t);
   }, [inputQ]);
 
-  // Fetch página 1 al cambiar filtros
-  useEffect(() => {
-    fetchPage(1, true);
-  }, [city, q]);
+  useEffect(() => { fetchPage(1, true); }, [city, q]);
 
   async function fetchPage(page, reset = false) {
     reset ? setLoading(true) : setLoadingMore(true);
     try {
-      const params = new URLSearchParams({ page });
+      const params = new URLSearchParams({ feed: '1', page });
       if (city) params.set('city', city);
       if (q)    params.set('q', q);
-
-      const res  = await fetch(`/api/feed?${params}`);
+      const res  = await fetch(`/api/catalog?${params}`);
       const data = await res.json();
-
       setProducts(prev => reset ? data.products : [...prev, ...data.products]);
       setPagination(data.pagination);
     } catch {}
-    finally {
-      reset ? setLoading(false) : setLoadingMore(false);
-    }
+    finally { reset ? setLoading(false) : setLoadingMore(false); }
   }
 
-  // Infinite scroll con IntersectionObserver
   useEffect(() => {
     if (!loaderRef.current) return;
     const obs = new IntersectionObserver(
@@ -64,7 +52,6 @@ export default function FeedPage() {
 
   return (
     <div className={styles.page}>
-      {/* Header */}
       <header className={styles.header}>
         <div className={styles.headerInner}>
           <Link to="/" className={styles.brand}>PlaceStore</Link>
@@ -72,7 +59,6 @@ export default function FeedPage() {
         </div>
       </header>
 
-      {/* Filtros */}
       <div className={styles.filtersBar}>
         <div className={styles.filtersInner}>
           <div className={styles.searchWrap}>
@@ -83,11 +69,8 @@ export default function FeedPage() {
               value={inputQ}
               onChange={e => setInputQ(e.target.value)}
             />
-            {inputQ && (
-              <button className={styles.clearBtn} onClick={() => setInputQ('')}>✕</button>
-            )}
+            {inputQ && <button className={styles.clearBtn} onClick={() => setInputQ('')}>✕</button>}
           </div>
-
           <div className={styles.cityFilters}>
             {CIUDADES.map(c => {
               const val = c === 'Todas' ? '' : c;
@@ -105,21 +88,17 @@ export default function FeedPage() {
         </div>
       </div>
 
-      {/* Resultados */}
       <main className={styles.main}>
         {pagination && (
           <p className={styles.resultCount}>
             {pagination.total} producto{pagination.total !== 1 ? 's' : ''}
-            {city ? ` en ${city}` : ''}
-            {q ? ` · "${q}"` : ''}
+            {city ? ` en ${city}` : ''}{q ? ` · "${q}"` : ''}
           </p>
         )}
 
         {loading ? (
           <div className={styles.grid}>
-            {[...Array(12)].map((_, i) => (
-              <div key={i} className={styles.skeleton} />
-            ))}
+            {[...Array(12)].map((_, i) => <div key={i} className={styles.skeleton} />)}
           </div>
         ) : products.length === 0 ? (
           <div className={styles.empty}>
@@ -128,13 +107,10 @@ export default function FeedPage() {
           </div>
         ) : (
           <div className={styles.grid}>
-            {products.map(p => (
-              <FeedCard key={p.id} product={p} />
-            ))}
+            {products.map(p => <FeedCard key={p.id} product={p} />)}
           </div>
         )}
 
-        {/* Trigger infinite scroll */}
         <div ref={loaderRef} className={styles.loaderTrigger}>
           {loadingMore && <span className={styles.spinner} />}
         </div>
@@ -143,15 +119,12 @@ export default function FeedPage() {
   );
 }
 
-// ─── Card ────────────────────────────────────────────────────
-
 function FeedCard({ product: p }) {
   function buildWaUrl() {
     const number = p.store_whatsapp?.replace(/\D/g, '') || '';
     const msg    = `¡Hola! Vi tu catálogo en PlaceStore y me interesa: ${p.name}. ¿Está disponible?`;
     return `https://wa.me/${number}?text=${encodeURIComponent(msg)}`;
   }
-
   return (
     <article className={styles.card}>
       <Link to={`/tienda/${p.store_slug}`} className={styles.cardImgWrap}>
@@ -160,7 +133,6 @@ function FeedCard({ product: p }) {
           : <div className={styles.cardImgPlaceholder}>📦</div>
         }
       </Link>
-
       <div className={styles.cardBody}>
         <Link to={`/tienda/${p.store_slug}`} className={styles.storeLink}>
           {p.store_logo
@@ -170,21 +142,12 @@ function FeedCard({ product: p }) {
           <span className={styles.storeName}>{p.store_name}</span>
           <span className={styles.storeCity}>{p.location_city}</span>
         </Link>
-
         <p className={styles.productName}>{p.name}</p>
         <p className={styles.productPrice}>Bs {Number(p.price_bs).toFixed(2)}</p>
       </div>
-
       <div className={styles.cardFooter}>
-        <Link to={`/tienda/${p.store_slug}`} className={`btn btn-ghost ${styles.btnSee}`}>
-          Ver tienda
-        </Link>
-        <a
-          href={buildWaUrl()}
-          target="_blank"
-          rel="noreferrer"
-          className={`btn btn-primary ${styles.btnWa}`}
-        >
+        <Link to={`/tienda/${p.store_slug}`} className={`btn btn-ghost ${styles.btnSee}`}>Ver tienda</Link>
+        <a href={buildWaUrl()} target="_blank" rel="noreferrer" className={`btn btn-primary ${styles.btnWa}`}>
           <WaIcon /> Pedir
         </a>
       </div>

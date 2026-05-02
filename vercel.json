@@ -2,7 +2,7 @@
   "rewrites": [
     {
       "source": "/p/:id",
-      "destination": "/api/og/:id"
+      "destination": "/api/catalog?og=1&id=:id"
     },
     {
       "source": "/((?!api/).*)",
@@ -11,7 +11,7 @@
   ],
   "crons": [
     {
-      "path": "/api/cron/expire-subscriptions",
+      "path": "/api/cron",
       "schedule": "0 7 * * *"
     }
   ]

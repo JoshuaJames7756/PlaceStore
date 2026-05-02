@@ -1,6 +1,8 @@
-// /api/dashboard/stats.js
+// /api/dashboard.js
+// GET → stats de la tienda autenticada
+
 import { neon } from '@neondatabase/serverless';
-import { verificarClerk } from '../_lib/clerk.js';
+import { verificarClerk } from './_lib/clerk.js';
 
 const sql = neon(process.env.DATABASE_URL);
 

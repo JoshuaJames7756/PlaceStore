@@ -11,16 +11,16 @@ export default function DashboardPage() {
   const { getToken, signOut } = useAuth();
   const { store, loading: storeLoading, error, refetch } = useStore();
 
-  const [stats, setStats]           = useState(null);
+  const [stats, setStats]               = useState(null);
   const [statsLoading, setStatsLoading] = useState(true);
-  const [copied, setCopied]         = useState(false);
+  const [copied, setCopied]             = useState(false);
   const [uploadingLogo, setUploadingLogo] = useState(false);
-  const logoRef                     = useRef(null);
+  const logoRef                         = useRef(null);
 
   useEffect(() => {
     if (!store) return;
     getToken()
-      .then(token => fetch('/api/dashboard/stats', {
+      .then(token => fetch('/api/dashboard', {
         headers: { Authorization: `Bearer ${token}` },
       }))
       .then(r => r.json())
@@ -29,13 +29,8 @@ export default function DashboardPage() {
       .finally(() => setStatsLoading(false));
   }, [store]);
 
-  if (storeLoading) {
-    return <div className={styles.center}><span className={styles.spinner} /></div>;
-  }
-
-  if (error) {
-    return <div style={{ color: 'red', padding: '2rem' }}>Error: {error}</div>;
-  }
+  if (storeLoading) return <div className={styles.center}><span className={styles.spinner} /></div>;
+  if (error) return <div style={{ color: 'red', padding: '2rem' }}>Error: {error}</div>;
 
   if (!store) {
     return (
@@ -66,10 +61,8 @@ export default function DashboardPage() {
     const file = e.target.files?.[0];
     if (!file) return;
     if (file.size > 5 * 1024 * 1024) { alert('La imagen no puede superar 5MB'); return; }
-
     setUploadingLogo(true);
     try {
-      // 1. Subir a Cloudinary
       const base64 = await fileToBase64(file);
       const token  = await getToken();
       const upRes  = await fetch('/api/upload-image', {
@@ -80,14 +73,12 @@ export default function DashboardPage() {
       const upData = await upRes.json();
       if (!upRes.ok) throw new Error(upData.error || 'Error al subir imagen');
 
-      // 2. Guardar URL en la tienda
-      const updateRes = await fetch('/api/stores/update', {
+      const updateRes = await fetch('/api/stores', {
         method:  'PATCH',
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
         body:    JSON.stringify({ logo_url: upData.url }),
       });
       if (!updateRes.ok) throw new Error('Error al guardar logo');
-
       await refetch();
     } catch (err) {
       alert(err.message);
@@ -99,7 +90,6 @@ export default function DashboardPage() {
 
   return (
     <div className={styles.page}>
-      {/* Topbar */}
       <header className={styles.topbar}>
         <span className={styles.brand}>PlaceStore</span>
         <div className={styles.topbarRight}>
@@ -111,8 +101,6 @@ export default function DashboardPage() {
       </header>
 
       <div className={styles.container}>
-
-        {/* Banner suscripción */}
         <SubBanner status={subStatus} diasRestantes={diasRestantes} />
 
         {/* Perfil de tienda */}
@@ -146,9 +134,7 @@ export default function DashboardPage() {
         <div className={styles.catalogCard}>
           <div className={styles.catalogInfo}>
             <p className={styles.catalogLabel}>Tu catálogo público</p>
-            <a href={catalogUrl} target="_blank" rel="noreferrer" className={styles.catalogUrl}>
-              {catalogUrl}
-            </a>
+            <a href={catalogUrl} target="_blank" rel="noreferrer" className={styles.catalogUrl}>{catalogUrl}</a>
           </div>
           <div className={styles.catalogActions}>
             <button className={`btn btn-ghost ${styles.copyBtn}`} onClick={copiarEnlace}>
@@ -156,8 +142,7 @@ export default function DashboardPage() {
             </button>
             <a
               href={'https://wa.me/?text=' + encodeURIComponent('Mira mi catálogo: ' + catalogUrl)}
-              target="_blank"
-              rel="noreferrer"
+              target="_blank" rel="noreferrer"
               className="btn btn-primary"
               style={{ fontSize: '0.875rem' }}
             >
@@ -195,13 +180,10 @@ export default function DashboardPage() {
             </a>
           </div>
         </div>
-
       </div>
     </div>
   );
 }
-
-// ─── Sub-componentes ─────────────────────────────────────────
 
 function SubBanner({ status, diasRestantes }) {
   if (status === 'active') return null;

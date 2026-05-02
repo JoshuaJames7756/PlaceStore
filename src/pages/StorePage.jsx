@@ -7,16 +7,15 @@ const APP_URL = import.meta.env.VITE_APP_URL || '';
 
 export default function StorePage() {
   const { slug } = useParams();
-
-  const [data, setData]         = useState(null);
-  const [loading, setLoading]   = useState(true);
-  const [error, setError]       = useState(null);
+  const [data, setData]           = useState(null);
+  const [loading, setLoading]     = useState(true);
+  const [error, setError]         = useState(null);
   const [activeCat, setActiveCat] = useState('');
-  const [search, setSearch]     = useState('');
-  const [lightbox, setLightbox] = useState(null); // { images, idx }
+  const [search, setSearch]       = useState('');
+  const [lightbox, setLightbox]   = useState(null);
 
   useEffect(() => {
-    fetch(`/api/stores/${slug}`)
+    fetch(`/api/stores?slug=${slug}`)
       .then(r => r.ok ? r.json() : r.json().then(d => Promise.reject(d.error)))
       .then(setData)
       .catch(err => setError(typeof err === 'string' ? err : 'Error al cargar la tienda'))
@@ -47,7 +46,6 @@ export default function StorePage() {
 
   return (
     <div className={styles.page}>
-      {/* Header de tienda */}
       <header className={styles.storeHeader}>
         <div className={styles.storeHeaderInner}>
           {store.logo_url
@@ -60,8 +58,7 @@ export default function StorePage() {
           </div>
           <a
             href={buildWhatsAppUrl({ name: 'tu catálogo' })}
-            target="_blank"
-            rel="noreferrer"
+            target="_blank" rel="noreferrer"
             className={`btn btn-primary ${styles.btnWa}`}
           >
             <WhatsAppIcon /> Contactar
@@ -70,7 +67,6 @@ export default function StorePage() {
       </header>
 
       <div className={styles.container}>
-        {/* Filtros */}
         <div className={styles.filters}>
           <input
             className={styles.search}
@@ -80,12 +76,7 @@ export default function StorePage() {
           />
           {categories.length > 0 && (
             <div className={styles.cats}>
-              <button
-                className={`${styles.catBtn} ${!activeCat ? styles.catActive : ''}`}
-                onClick={() => setActiveCat('')}
-              >
-                Todos
-              </button>
+              <button className={`${styles.catBtn} ${!activeCat ? styles.catActive : ''}`} onClick={() => setActiveCat('')}>Todos</button>
               {categories.map(c => (
                 <button
                   key={c.id}
@@ -99,7 +90,6 @@ export default function StorePage() {
           )}
         </div>
 
-        {/* Grid de productos */}
         {filtered.length === 0 ? (
           <div className={styles.empty}>No hay productos en esta sección.</div>
         ) : (
@@ -121,29 +111,16 @@ export default function StorePage() {
                       <span className={styles.imgCount}>+{product.images.length - 1}</span>
                     )}
                   </div>
-
                   <div className={styles.cardBody}>
                     <p className={styles.productName}>{product.name}</p>
-                    {product.description && (
-                      <p className={styles.productDesc}>{product.description}</p>
-                    )}
+                    {product.description && <p className={styles.productDesc}>{product.description}</p>}
                     <p className={styles.productPrice}>Bs {Number(product.price_bs).toFixed(2)}</p>
                   </div>
-
                   <div className={styles.cardFooter}>
-                    <a
-                      href={buildWhatsAppUrl(product)}
-                      target="_blank"
-                      rel="noreferrer"
-                      className={`btn btn-primary ${styles.btnBuy}`}
-                    >
+                    <a href={buildWhatsAppUrl(product)} target="_blank" rel="noreferrer" className={`btn btn-primary ${styles.btnBuy}`}>
                       <WhatsAppIcon /> Comprar
                     </a>
-                    <button
-                      className={styles.shareBtn}
-                      onClick={() => shareProduct(product, store, APP_URL)}
-                      title="Compartir"
-                    >
+                    <button className={styles.shareBtn} onClick={() => shareProduct(product, store, APP_URL)} title="Compartir">
                       <ShareIcon />
                     </button>
                   </div>
@@ -153,14 +130,12 @@ export default function StorePage() {
           </div>
         )}
 
-        {/* Footer */}
         <footer className={styles.footer}>
           <span>Catálogo creado con</span>
           <a href="/" className={styles.footerBrand}>PlaceStore</a>
         </footer>
       </div>
 
-      {/* Lightbox */}
       {lightbox && (
         <Lightbox
           images={lightbox.images}
@@ -173,11 +148,8 @@ export default function StorePage() {
   );
 }
 
-// ─── Lightbox ───────────────────────────────────────────────
-
 function Lightbox({ images, idx, onClose, onChange }) {
   const sorted = [...images].sort((a, b) => a.sort_order - b.sort_order);
-
   useEffect(() => {
     function onKey(e) {
       if (e.key === 'Escape')     onClose();
@@ -187,24 +159,15 @@ function Lightbox({ images, idx, onClose, onChange }) {
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
   }, [idx]);
-
   return (
     <div className={styles.lbOverlay} onClick={onClose}>
       <div className={styles.lbContent} onClick={e => e.stopPropagation()}>
         <img src={sorted[idx].url} alt="" className={styles.lbImg} />
         {sorted.length > 1 && (
           <div className={styles.lbNav}>
-            <button
-              className={styles.lbArrow}
-              onClick={() => onChange(Math.max(idx - 1, 0))}
-              disabled={idx === 0}
-            >‹</button>
+            <button className={styles.lbArrow} onClick={() => onChange(Math.max(idx - 1, 0))} disabled={idx === 0}>‹</button>
             <span className={styles.lbCounter}>{idx + 1} / {sorted.length}</span>
-            <button
-              className={styles.lbArrow}
-              onClick={() => onChange(Math.min(idx + 1, sorted.length - 1))}
-              disabled={idx === sorted.length - 1}
-            >›</button>
+            <button className={styles.lbArrow} onClick={() => onChange(Math.min(idx + 1, sorted.length - 1))} disabled={idx === sorted.length - 1}>›</button>
           </div>
         )}
         <button className={styles.lbClose} onClick={onClose}>✕</button>
@@ -213,22 +176,12 @@ function Lightbox({ images, idx, onClose, onChange }) {
   );
 }
 
-// ─── Helpers ────────────────────────────────────────────────
-
 async function shareProduct(product, store, appUrl) {
   const url  = `${appUrl}/p/${product.id}`;
   const text = `${product.name} — Bs ${Number(product.price_bs).toFixed(2)} | ${store.store_name}`;
-
-  if (navigator.share) {
-    try { await navigator.share({ title: product.name, text, url }); return; } catch {}
-  }
-  try {
-    await navigator.clipboard.writeText(`${text}\n${url}`);
-    alert('¡Enlace copiado!');
-  } catch {}
+  if (navigator.share) { try { await navigator.share({ title: product.name, text, url }); return; } catch {} }
+  try { await navigator.clipboard.writeText(`${text}\n${url}`); alert('¡Enlace copiado!'); } catch {}
 }
-
-// ─── Iconos SVG inline ──────────────────────────────────────
 
 function WhatsAppIcon() {
   return (

@@ -4,10 +4,10 @@ import { useAuth } from '@clerk/clerk-react';
 
 export function useProducts() {
   const { getToken } = useAuth();
-  const [products, setProducts]   = useState([]);
+  const [products, setProducts]     = useState([]);
   const [categories, setCategories] = useState([]);
-  const [loading, setLoading]     = useState(true);
-  const [error, setError]         = useState(null);
+  const [loading, setLoading]       = useState(true);
+  const [error, setError]           = useState(null);
 
   const fetchAll = useCallback(async () => {
     setLoading(true);
@@ -15,17 +15,13 @@ export function useProducts() {
     try {
       const token = await getToken();
       const headers = { Authorization: `Bearer ${token}` };
-
       const [prodRes, catRes] = await Promise.all([
         fetch('/api/products',   { headers }),
         fetch('/api/categories', { headers }),
       ]);
-
       if (!prodRes.ok) throw new Error('Error al cargar productos');
       if (!catRes.ok)  throw new Error('Error al cargar categorías');
-
       const [prodData, catData] = await Promise.all([prodRes.json(), catRes.json()]);
-      
       setProducts(prodData.products);
       setCategories(catData.categories);
     } catch (err) {
@@ -88,31 +84,19 @@ export function useProducts() {
   }
 
   async function subirImagen(file) {
-    const token = await getToken();
-    // Convertir File a base64
+    const token  = await getToken();
     const base64 = await fileToBase64(file);
-    const res = await fetch('/api/upload-image', {
+    const res    = await fetch('/api/upload-image', {
       method:  'POST',
       headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
       body:    JSON.stringify({ file: base64 }),
     });
     const data = await res.json();
     if (!res.ok) throw new Error(data.error || 'Error al subir imagen');
-    return data; // { cloudinary_id, url }
+    return data;
   }
 
-  return {
-    products,
-    categories,
-    loading,
-    error,
-    crearProducto,
-    editarProducto,
-    eliminarProducto,
-    crearCategoria,
-    subirImagen,
-    refetch: fetchAll,
-  };
+  return { products, categories, loading, error, crearProducto, editarProducto, eliminarProducto, crearCategoria, subirImagen, refetch: fetchAll };
 }
 
 function fileToBase64(file) {

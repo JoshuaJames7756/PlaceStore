@@ -4,18 +4,18 @@ import { useAuth } from '@clerk/clerk-react';
 import { useStore } from '../hooks/useStore.js';
 import styles from './SubscriptionPage.module.css';
 
-const PRECIO_BS = 50; // ajustar cuando definas el precio real
+const PRECIO_BS = 50;
 
 export default function SubscriptionPage() {
   const { getToken } = useAuth();
   const { store, loading } = useStore();
 
-  const [step, setStep]       = useState('info'); // info | form | sent
-  const [method, setMethod]   = useState('tigo_money');
+  const [step, setStep]           = useState('info');
+  const [method, setMethod]       = useState('tigo_money');
   const [reference, setReference] = useState('');
   const [receiptFile, setReceiptFile] = useState(null);
-  const [sending, setSending] = useState(false);
-  const [error, setError]     = useState('');
+  const [sending, setSending]     = useState(false);
+  const [error, setError]         = useState('');
 
   if (loading) return <div className={styles.center}><span className={styles.spinner} /></div>;
 
@@ -28,12 +28,9 @@ export default function SubscriptionPage() {
     if (!reference.trim()) { setError('Ingresa el número de referencia'); return; }
     setSending(true);
     setError('');
-
     try {
       const token = await getToken();
       let receipt_url = null;
-
-      // Subir comprobante si hay archivo
       if (receiptFile) {
         const base64 = await fileToBase64(receiptFile);
         const upRes  = await fetch('/api/upload-image', {
@@ -45,7 +42,6 @@ export default function SubscriptionPage() {
         if (!upRes.ok) throw new Error(upData.error || 'Error al subir comprobante');
         receipt_url = upData.url;
       }
-
       const res = await fetch('/api/payments', {
         method:  'POST',
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
@@ -53,7 +49,6 @@ export default function SubscriptionPage() {
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Error al enviar pago');
-
       setStep('sent');
     } catch (err) {
       setError(err.message);
@@ -67,23 +62,15 @@ export default function SubscriptionPage() {
       <div className={styles.container}>
         <h1 className={styles.title}>Mi suscripción</h1>
 
-        {/* Estado actual */}
         <div className={styles.statusCard}>
           <StatusBadge status={subStatus} />
           <div className={styles.statusInfo}>
-            {subStatus === 'trial' && (
-              <p>Período de prueba — quedan <strong>{diasRestantes} día{diasRestantes !== 1 ? 's' : ''}</strong></p>
-            )}
-            {subStatus === 'active' && (
-              <p>Tu plan está activo. Vence el <strong>{new Date(store.sub_expires_at).toLocaleDateString('es-BO')}</strong></p>
-            )}
-            {subStatus === 'expired' && (
-              <p>Tu suscripción venció. Tu catálogo no está visible hasta que renueves.</p>
-            )}
+            {subStatus === 'trial'   && <p>Período de prueba — quedan <strong>{diasRestantes} día{diasRestantes !== 1 ? 's' : ''}</strong></p>}
+            {subStatus === 'active'  && <p>Tu plan está activo. Vence el <strong>{new Date(store.sub_expires_at).toLocaleDateString('es-BO')}</strong></p>}
+            {subStatus === 'expired' && <p>Tu suscripción venció. Tu catálogo no está visible hasta que renueves.</p>}
           </div>
         </div>
 
-        {/* Plan */}
         <div className={styles.planCard}>
           <div className={styles.planHeader}>
             <div>
@@ -104,14 +91,10 @@ export default function SubscriptionPage() {
           </ul>
         </div>
 
-        {/* Flujo de pago */}
         {step === 'info' && (
           <div className={styles.payCard}>
             <p className={styles.payTitle}>¿Cómo pagar?</p>
-            <p className={styles.payDesc}>
-              Realiza el pago de <strong>Bs {PRECIO_BS}</strong> por Tigo Money o transferencia bancaria,
-              luego envíanos el comprobante y activamos tu plan en menos de 24 horas.
-            </p>
+            <p className={styles.payDesc}>Realiza el pago de <strong>Bs {PRECIO_BS}</strong> por Tigo Money o transferencia bancaria, luego envíanos el comprobante y activamos tu plan en menos de 24 horas.</p>
             <div className={styles.payMethods}>
               <div className={styles.payMethod}>
                 <strong>Tigo Money</strong>
@@ -124,16 +107,13 @@ export default function SubscriptionPage() {
                 <span>Titular: PlaceStore</span>
               </div>
             </div>
-            <button className="btn btn-primary" onClick={() => setStep('form')}>
-              Ya realicé el pago →
-            </button>
+            <button className="btn btn-primary" onClick={() => setStep('form')}>Ya realicé el pago →</button>
           </div>
         )}
 
         {step === 'form' && (
           <div className={styles.payCard}>
             <p className={styles.payTitle}>Enviar comprobante</p>
-
             <label className={styles.label}>
               Método de pago
               <select className={styles.input} value={method} onChange={e => setMethod(e.target.value)}>
@@ -141,30 +121,16 @@ export default function SubscriptionPage() {
                 <option value="bank_transfer">Transferencia bancaria</option>
               </select>
             </label>
-
             <label className={styles.label}>
               Número de referencia / transacción
-              <input
-                className={styles.input}
-                value={reference}
-                onChange={e => setReference(e.target.value)}
-                placeholder="Ej: 4521873"
-              />
+              <input className={styles.input} value={reference} onChange={e => setReference(e.target.value)} placeholder="Ej: 4521873" />
             </label>
-
             <label className={styles.label}>
               Foto del comprobante <span className={styles.optional}>(recomendado)</span>
-              <input
-                type="file"
-                accept="image/*"
-                className={styles.fileInput}
-                onChange={e => setReceiptFile(e.target.files?.[0] || null)}
-              />
+              <input type="file" accept="image/*" className={styles.fileInput} onChange={e => setReceiptFile(e.target.files?.[0] || null)} />
               {receiptFile && <span className={styles.fileName}>{receiptFile.name}</span>}
             </label>
-
             {error && <p className={styles.error}>{error}</p>}
-
             <div className={styles.formBtns}>
               <button className="btn btn-ghost" onClick={() => setStep('info')}>← Atrás</button>
               <button className="btn btn-primary" onClick={handleEnviar} disabled={sending}>
@@ -178,10 +144,7 @@ export default function SubscriptionPage() {
           <div className={styles.sentCard}>
             <div className={styles.sentIcon}>✅</div>
             <h2 className={styles.sentTitle}>¡Comprobante recibido!</h2>
-            <p className={styles.sentText}>
-              Revisaremos tu pago y activaremos tu plan en menos de 24 horas.
-              Te avisaremos cuando esté listo.
-            </p>
+            <p className={styles.sentText}>Revisaremos tu pago y activaremos tu plan en menos de 24 horas.</p>
           </div>
         )}
       </div>
@@ -190,11 +153,7 @@ export default function SubscriptionPage() {
 }
 
 function StatusBadge({ status }) {
-  const map = {
-    trial:   { label: 'Prueba gratuita', cls: 'badgeTrial' },
-    active:  { label: 'Activo',          cls: 'badgeActive' },
-    expired: { label: 'Vencido',         cls: 'badgeExpired' },
-  };
+  const map = { trial: { label: 'Prueba gratuita', cls: 'badgeTrial' }, active: { label: 'Activo', cls: 'badgeActive' }, expired: { label: 'Vencido', cls: 'badgeExpired' } };
   const { label, cls } = map[status] || map.expired;
   return <span className={`${styles.badge} ${styles[cls]}`}>{label}</span>;
 }

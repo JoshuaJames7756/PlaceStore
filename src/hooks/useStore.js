@@ -4,12 +4,12 @@ import { useAuth } from '@clerk/clerk-react';
 
 export function useStore() {
   const { getToken, isSignedIn, isLoaded } = useAuth();
-  const [store, setStore]       = useState(null);
-  const [loading, setLoading]   = useState(true);
-  const [error, setError]       = useState(null);
+  const [store, setStore]     = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError]     = useState(null);
 
   useEffect(() => {
-    if (!isLoaded) return;           // ← agregar esta línea
+    if (!isLoaded) return;
     if (!isSignedIn) { setLoading(false); return; }
     fetchStore();
   }, [isLoaded, isSignedIn]);
@@ -19,7 +19,7 @@ export function useStore() {
     setError(null);
     try {
       const token = await getToken();
-      const res   = await fetch('/api/stores/me', {
+      const res   = await fetch('/api/stores?me=1', {
         headers: { Authorization: `Bearer ${token}` },
       });
       if (res.status === 404) { setStore(null); return; }
