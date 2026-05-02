@@ -99,7 +99,7 @@ export default function HomePage() {
             ) : (
               <SignInButton mode="modal">
                 <button className={`btn btn-primary ${styles.ctaMain}`}>
-                  Empieza gratis — 7 días
+                  Empieza gratis — 30 días
                 </button>
               </SignInButton>
             )}
@@ -173,7 +173,7 @@ export default function HomePage() {
             <div className={styles.priceLeft}>
               <p className={styles.planLabel}>Plan Básico</p>
               <p className={styles.planPrice}>Bs 70 <span>/mes</span></p>
-              <p className={styles.planTrial}>7 días gratis para empezar</p>
+              <p className={styles.planTrial}>30 días gratis para empezar</p>
             </div>
             <ul className={styles.priceFeatures}>
               <li>✓ Productos ilimitados</li>

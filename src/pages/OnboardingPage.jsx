@@ -225,7 +225,7 @@ export default function OnboardingPage() {
             <div className={styles.successIcon}>🎉</div>
             <h2 className={styles.successTitle}>¡Tu tienda está lista!</h2>
             <p className={styles.successText}>
-              Tienes <strong>7 días gratis</strong> para explorar PlaceStore.
+              Tienes <strong>30 días gratis</strong> para explorar PlaceStore.
               Agrega tus productos y empieza a vender por WhatsApp.
             </p>
             <button
