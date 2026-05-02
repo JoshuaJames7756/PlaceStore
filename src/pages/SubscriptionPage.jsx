@@ -4,14 +4,14 @@ import { useAuth } from '@clerk/clerk-react';
 import { useStore } from '../hooks/useStore.js';
 import styles from './SubscriptionPage.module.css';
 
-const PRECIO_BS = 50;
+const PRECIO_BS = 70;
 
 export default function SubscriptionPage() {
   const { getToken } = useAuth();
   const { store, loading } = useStore();
 
   const [step, setStep]           = useState('info');
-  const [method, setMethod]       = useState('tigo_money');
+  const [method, setMethod]       = useState('qr');
   const [reference, setReference] = useState('');
   const [receiptFile, setReceiptFile] = useState(null);
   const [sending, setSending]     = useState(false);
@@ -94,16 +94,16 @@ export default function SubscriptionPage() {
         {step === 'info' && (
           <div className={styles.payCard}>
             <p className={styles.payTitle}>¿Cómo pagar?</p>
-            <p className={styles.payDesc}>Realiza el pago de <strong>Bs {PRECIO_BS}</strong> por Tigo Money o transferencia bancaria, luego envíanos el comprobante y activamos tu plan en menos de 24 horas.</p>
+            <p className={styles.payDesc}>Realiza el pago de <strong>Bs {PRECIO_BS}</strong> por QR o transferencia bancaria, luego envíanos el comprobante y activamos tu plan en menos de 24 horas.</p>
             <div className={styles.payMethods}>
               <div className={styles.payMethod}>
-                <strong>Tigo Money</strong>
-                <span>Número: <strong>7XXXXXXX</strong></span>
+                <strong>QR</strong>
+                <span>Número: <strong>74328155</strong></span>
                 <span>Titular: PlaceStore</span>
               </div>
               <div className={styles.payMethod}>
                 <strong>Transferencia bancaria</strong>
-                <span>Banco: BCP · Cuenta: XXXXXXXXXX</span>
+                <span>Banco: BCP · Cuenta: 30151429551323</span>
                 <span>Titular: PlaceStore</span>
               </div>
             </div>
@@ -117,7 +117,7 @@ export default function SubscriptionPage() {
             <label className={styles.label}>
               Método de pago
               <select className={styles.input} value={method} onChange={e => setMethod(e.target.value)}>
-                <option value="tigo_money">Tigo Money</option>
+                <option value="qr">QR</option>
                 <option value="bank_transfer">Transferencia bancaria</option>
               </select>
             </label>

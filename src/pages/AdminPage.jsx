@@ -69,7 +69,7 @@ function PagosTab({ getToken, status }) {
           <div className={styles.payMain}>
             <div>
               <p className={styles.payStore}>{p.store_name}</p>
-              <p className={styles.payMeta}>{p.location_city} · {p.method === 'tigo_money' ? 'Tigo Money' : 'Transferencia'}</p>
+              <p className={styles.payMeta}>{p.location_city} · {p.method === 'QR' ? 'QR' : 'Transferencia'}</p>
             </div>
             <div className={styles.payRight}>
               <p className={styles.payAmount}>Bs {Number(p.amount_bs).toFixed(2)}</p>

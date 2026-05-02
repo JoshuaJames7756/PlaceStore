@@ -19,7 +19,7 @@ export default async function handler(req, res) {
   const storeId = storeRows[0].id;
 
   const { method, reference, receipt_url, amount_bs } = req.body;
-  const METODOS = ['tigo_money', 'bank_transfer'];
+  const METODOS = ['qr', 'bank_transfer'];
   if (!METODOS.includes(method))    return res.status(400).json({ error: 'Método inválido' });
   if (!reference?.trim())           return res.status(400).json({ error: 'Referencia requerida' });
   if (!amount_bs || amount_bs <= 0) return res.status(400).json({ error: 'Monto inválido' });
