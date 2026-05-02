@@ -8,9 +8,7 @@ export default async function handler(req) {
   console.log('🔵 stores POST iniciado');
   console.log('🔵 DATABASE_URL existe:', !!process.env.DATABASE_URL);
 
-  if (req.method !== 'POST') {
-    return Response.json({ error: 'Método no permitido' }, { status: 405 });
-  }
+  if (req.method !== 'POST') return Response.json({ error: 'Método no permitido' }, { status: 405 });
 
   let userId;
   try {
@@ -20,6 +18,10 @@ export default async function handler(req) {
     console.log('🔴 Clerk error:', err.message);
     return Response.json({ error: err.message }, { status: 401 });
   }
+
+  console.log('🔵 Verificando tienda existente...');
+  const existing = await sql`SELECT id FROM stores WHERE clerk_id = ${userId} LIMIT 1`;
+  console.log('🟢 existing check ok, filas:', existing.length);
 
   const existing = await sql`SELECT id FROM stores WHERE clerk_id = ${userId} LIMIT 1`;
   if (existing.length) {
@@ -68,7 +70,11 @@ function slugify(str) {
 }
 
 async function generarSlugUnico(base) {
-  const rows = await sql`SELECT slug FROM stores WHERE slug = ${base} OR slug LIKE ${base + '-%'} ORDER BY slug`;
+  const rows = await sql`
+    SELECT slug FROM stores
+    WHERE slug = ${base} OR slug LIKE ${base + '-%'}
+    ORDER BY slug
+  `;
   if (!rows.length) return base;
   const usados = new Set(rows.map(r => r.slug));
   if (!usados.has(base)) return base;
