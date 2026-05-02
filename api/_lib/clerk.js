@@ -20,6 +20,8 @@ export function verificarClerk(req) {
 
 export function verificarAdmin(req) {
   const { userId } = verificarClerk(req);
+  console.log('🔑 userId del token:', userId);
+  console.log('🔑 ADMIN_CLERK_ID:', process.env.ADMIN_CLERK_ID);
   if (!process.env.ADMIN_CLERK_ID) throw new Error('ADMIN_CLERK_ID no configurado');
   if (userId !== process.env.ADMIN_CLERK_ID) throw new Error('Prohibido: acceso de admin requerido');
   return { userId };
