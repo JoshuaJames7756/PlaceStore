@@ -4,50 +4,32 @@ import { verificarClerk } from './_lib/clerk.js';
 
 const sql = neon(process.env.DATABASE_URL);
 
-export default async function handler(req) {
-  console.log('🔵 stores POST iniciado');
-  console.log('🔵 DATABASE_URL existe:', !!process.env.DATABASE_URL);
-
-  if (req.method !== 'POST') return Response.json({ error: 'Método no permitido' }, { status: 405 });
+export default async function handler(req, res) {
+  if (req.method !== 'POST') return res.status(405).json({ error: 'Método no permitido' });
 
   let userId;
   try {
     ({ userId } = verificarClerk(req));
-    console.log('🟢 userId:', userId);
   } catch (err) {
-    console.log('🔴 Clerk error:', err.message);
-    return Response.json({ error: err.message }, { status: 401 });
+    return res.status(401).json({ error: err.message });
   }
 
-  console.log('🔵 Verificando tienda existente...');
   const existing = await sql`SELECT id FROM stores WHERE clerk_id = ${userId} LIMIT 1`;
-  console.log('🟢 existing check ok, filas:', existing.length);
+  if (existing.length) return res.status(409).json({ error: 'Ya tienes una tienda registrada' });
 
-  if (existing.length) {
-    return Response.json({ error: 'Ya tienes una tienda registrada' }, { status: 409 });
-  }
-
-  let body;
-  try { body = await req.json(); } catch {
-    return Response.json({ error: 'Body inválido' }, { status: 400 });
-  }
-
+  const body = req.body;
   const { store_name, whatsapp_number, location_city, logo_url } = body;
+
   const CIUDADES = ['Cochabamba', 'Santa Cruz', 'La Paz', 'Oruro', 'Potosí', 'Sucre', 'Tarija', 'Beni', 'Pando'];
+  if (!store_name?.trim())             return res.status(400).json({ error: 'Nombre de tienda requerido' });
+  if (!whatsapp_number?.trim())        return res.status(400).json({ error: 'Número de WhatsApp requerido' });
+  if (!CIUDADES.includes(location_city)) return res.status(400).json({ error: 'Ciudad inválida' });
 
-  if (!store_name?.trim())      return Response.json({ error: 'Nombre de tienda requerido' }, { status: 400 });
-  if (!whatsapp_number?.trim()) return Response.json({ error: 'Número de WhatsApp requerido' }, { status: 400 });
-  if (!CIUDADES.includes(location_city)) return Response.json({ error: 'Ciudad inválida' }, { status: 400 });
-
-  console.log('🔵 Generando slug...');
   const baseSlug = slugify(store_name);
   const slug     = await generarSlugUnico(baseSlug);
-  console.log('🟢 slug:', slug);
-
   const trialExpires = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
 
   try {
-    console.log('🔵 Insertando tienda...');
     const [store] = await sql`
       WITH nueva_tienda AS (
         INSERT INTO stores (clerk_id, slug, store_name, whatsapp_number, location_city, logo_url, is_active, trial_expires)
@@ -60,11 +42,10 @@ export default async function handler(req) {
       )
       SELECT * FROM nueva_tienda
     `;
-    console.log('🟢 Tienda creada:', store.id);
-    return Response.json({ store }, { status: 201 });
+    return res.status(201).json({ store });
   } catch (err) {
     console.error('🔴 DB error:', err.message);
-    return Response.json({ error: 'Error al crear la tienda' }, { status: 500 });
+    return res.status(500).json({ error: 'Error al crear la tienda' });
   }
 }
 
@@ -73,9 +54,7 @@ function slugify(str) {
 }
 
 async function generarSlugUnico(base) {
-  const rows = await sql`
-    SELECT slug FROM stores WHERE slug = ${base} OR slug LIKE ${base + '-%'} ORDER BY slug
-  `;
+  const rows = await sql`SELECT slug FROM stores WHERE slug = ${base} OR slug LIKE ${base + '-%'} ORDER BY slug`;
   if (!rows.length) return base;
   const usados = new Set(rows.map(r => r.slug));
   if (!usados.has(base)) return base;

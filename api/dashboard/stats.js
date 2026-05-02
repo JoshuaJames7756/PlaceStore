@@ -4,18 +4,18 @@ import { verificarClerk } from '../_lib/clerk.js';
 
 const sql = neon(process.env.DATABASE_URL);
 
-export default async function handler(req) {
-  if (req.method !== 'GET') return Response.json({ error: 'Método no permitido' }, { status: 405 });
+export default async function handler(req, res) {
+  if (req.method !== 'GET') return res.status(405).json({ error: 'Método no permitido' });
 
   let userId;
   try {
     ({ userId } = verificarClerk(req));
   } catch (err) {
-    return Response.json({ error: err.message }, { status: 401 });
+    return res.status(401).json({ error: err.message });
   }
 
   const storeRows = await sql`SELECT id FROM stores WHERE clerk_id = ${userId} LIMIT 1`;
-  if (!storeRows.length) return Response.json({ error: 'Tienda no encontrada' }, { status: 404 });
+  if (!storeRows.length) return res.status(404).json({ error: 'Tienda no encontrada' });
   const storeId = storeRows[0].id;
 
   const [statsRow] = await sql`
@@ -27,9 +27,11 @@ export default async function handler(req) {
     FROM products WHERE store_id = ${storeId}
   `;
 
-  const [topRow] = await sql`SELECT name, views_count FROM products WHERE store_id = ${storeId} ORDER BY views_count DESC LIMIT 1`;
+  const [topRow] = await sql`
+    SELECT name, views_count FROM products WHERE store_id = ${storeId} ORDER BY views_count DESC LIMIT 1
+  `;
 
-  return Response.json({
+  return res.status(200).json({
     stats: {
       total_products:     Number(statsRow.total_products),
       available_products: Number(statsRow.available_products),
