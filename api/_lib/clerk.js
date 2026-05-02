@@ -1,5 +1,6 @@
 export function verificarClerk(req) {
   const auth  = req.headers?.get?.('authorization') || req.headers?.authorization || '';
+  console.log('🔑 Auth recibido:', auth.slice(0, 40) || 'VACÍO');
   const token = auth.replace('Bearer ', '').trim();
   if (!token) throw new Error('No autorizado: token ausente');
   const parts = token.split('.');
@@ -17,10 +18,8 @@ export function verificarClerk(req) {
   return { userId: payload.sub };
 }
 
-export function verificarClerk(req) {
-  const auth  = req.headers?.get?.('authorization') || req.headers?.authorization || '';
-  console.log('🔑 Auth recibido:', auth.slice(0, 40) || 'VACÍO');
-  const token = auth.replace('Bearer ', '').trim();
+export function verificarAdmin(req) {
+  const { userId } = verificarClerk(req);
   if (!process.env.ADMIN_CLERK_ID) throw new Error('ADMIN_CLERK_ID no configurado');
   if (userId !== process.env.ADMIN_CLERK_ID) throw new Error('Prohibido: acceso de admin requerido');
   return { userId };
