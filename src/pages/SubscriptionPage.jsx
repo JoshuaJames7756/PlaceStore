@@ -5,17 +5,18 @@ import { useStore } from '../hooks/useStore.js';
 import styles from './SubscriptionPage.module.css';
 
 const PRECIO_BS = 70;
+const QR_URL = 'https://res.cloudinary.com/jvsoftware/image/upload/v1777738268/QR_crcgcx.jpg';
 
 export default function SubscriptionPage() {
   const { getToken } = useAuth();
   const { store, loading } = useStore();
 
-  const [step, setStep]           = useState('info');
-  const [method, setMethod]       = useState('qr');
-  const [reference, setReference] = useState('');
+  const [step, setStep]               = useState('info');
+  const [method, setMethod]           = useState('qr');
+  const [reference, setReference]     = useState('');
   const [receiptFile, setReceiptFile] = useState(null);
-  const [sending, setSending]     = useState(false);
-  const [error, setError]         = useState('');
+  const [sending, setSending]         = useState(false);
+  const [error, setError]             = useState('');
 
   if (loading) return <div className={styles.center}><span className={styles.spinner} /></div>;
 
@@ -33,19 +34,19 @@ export default function SubscriptionPage() {
       let receipt_url = null;
       if (receiptFile) {
         const base64 = await fileToBase64(receiptFile);
-        const upRes  = await fetch('/api/upload-image', {
-          method:  'POST',
+        const upRes = await fetch('/api/upload-image', {
+          method: 'POST',
           headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
-          body:    JSON.stringify({ file: base64 }),
+          body: JSON.stringify({ file: base64 }),
         });
         const upData = await upRes.json();
         if (!upRes.ok) throw new Error(upData.error || 'Error al subir comprobante');
         receipt_url = upData.url;
       }
       const res = await fetch('/api/payments', {
-        method:  'POST',
+        method: 'POST',
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
-        body:    JSON.stringify({ method, reference: reference.trim(), receipt_url, amount_bs: PRECIO_BS }),
+        body: JSON.stringify({ method, reference: reference.trim(), receipt_url, amount_bs: PRECIO_BS }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Error al enviar pago');
@@ -65,9 +66,15 @@ export default function SubscriptionPage() {
         <div className={styles.statusCard}>
           <StatusBadge status={subStatus} />
           <div className={styles.statusInfo}>
-            {subStatus === 'trial'   && <p>Período de prueba — quedan <strong>{diasRestantes} día{diasRestantes !== 1 ? 's' : ''}</strong></p>}
-            {subStatus === 'active'  && <p>Tu plan está activo. Vence el <strong>{new Date(store.sub_expires_at).toLocaleDateString('es-BO')}</strong></p>}
-            {subStatus === 'expired' && <p>Tu suscripción venció. Tu catálogo no está visible hasta que renueves.</p>}
+            {subStatus === 'trial' && (
+              <p>Período de prueba — quedan <strong>{diasRestantes} día{diasRestantes !== 1 ? 's' : ''}</strong></p>
+            )}
+            {subStatus === 'active' && (
+              <p>Tu plan está activo. Vence el <strong>{new Date(store.sub_expires_at).toLocaleDateString('es-BO')}</strong></p>
+            )}
+            {subStatus === 'expired' && (
+              <p>Tu suscripción venció. Tu catálogo no está visible hasta que renueves.</p>
+            )}
           </div>
         </div>
 
@@ -94,23 +101,26 @@ export default function SubscriptionPage() {
         {step === 'info' && (
           <div className={styles.payCard}>
             <p className={styles.payTitle}>¿Cómo pagar?</p>
-            <p className={styles.payDesc}>Realiza el pago de <strong>Bs {PRECIO_BS}</strong> por QR o transferencia bancaria, luego envíanos el comprobante y activamos tu plan en menos de 24 horas.</p>
+            <p className={styles.payDesc}>
+              Realiza el pago de <strong>Bs {PRECIO_BS}</strong> por QR o transferencia bancaria,
+              luego envíanos el comprobante y activamos tu plan en menos de 24 horas.
+            </p>
             <div className={styles.payMethods}>
               <div className={styles.payMethod}>
                 <strong>QR (BCP)</strong>
-                <a href="https://res.cloudinary.com/jvsoftware/image/upload/v1777738268/QR_crcgcx.jpg" download="qr-placestore.jpg" target="_blank" rel="noreferrer">
+                <a href={QR_URL} download="qr-placestore.jpg" target="_blank" rel="noreferrer">
                   <img
-                    src="https://res.cloudinary.com/jvsoftware/image/upload/v1777738268/QR_crcgcx.jpg"
+                    src={QR_URL}
                     alt="QR de pago"
                     style={{ width: '240px', borderRadius: '8px', marginTop: '8px', display: 'block' }}
                   />
                 </a>
-                
-                  href="https://res.cloudinary.com/jvsoftware/image/upload/v1777738268/QR_crcgcx.jpg"
+                <a
+                  href={QR_URL}
                   download="qr-placestore.jpg"
                   target="_blank"
                   rel="noreferrer"
-                  style={{ fontSize: '0.8rem', fontWeight: '600', color: 'var(--color-cta-dark)', marginTop: '6px' }}
+                  style={{ fontSize: '0.8rem', fontWeight: '600', color: 'var(--color-cta-dark)', marginTop: '6px', display: 'block' }}
                 >
                   ⬇ Descargar QR
                 </a>
@@ -138,11 +148,21 @@ export default function SubscriptionPage() {
             </label>
             <label className={styles.label}>
               Número de referencia / transacción
-              <input className={styles.input} value={reference} onChange={e => setReference(e.target.value)} placeholder="Ej: 4521873" />
+              <input
+                className={styles.input}
+                value={reference}
+                onChange={e => setReference(e.target.value)}
+                placeholder="Ej: 4521873"
+              />
             </label>
             <label className={styles.label}>
               Foto del comprobante <span className={styles.optional}>(recomendado)</span>
-              <input type="file" accept="image/*" className={styles.fileInput} onChange={e => setReceiptFile(e.target.files?.[0] || null)} />
+              <input
+                type="file"
+                accept="image/*"
+                className={styles.fileInput}
+                onChange={e => setReceiptFile(e.target.files?.[0] || null)}
+              />
               {receiptFile && <span className={styles.fileName}>{receiptFile.name}</span>}
             </label>
             {error && <p className={styles.error}>{error}</p>}
@@ -168,7 +188,11 @@ export default function SubscriptionPage() {
 }
 
 function StatusBadge({ status }) {
-  const map = { trial: { label: 'Prueba gratuita', cls: 'badgeTrial' }, active: { label: 'Activo', cls: 'badgeActive' }, expired: { label: 'Vencido', cls: 'badgeExpired' } };
+  const map = {
+    trial:   { label: 'Prueba gratuita', cls: 'badgeTrial' },
+    active:  { label: 'Activo',          cls: 'badgeActive' },
+    expired: { label: 'Vencido',         cls: 'badgeExpired' },
+  };
   const { label, cls } = map[status] || map.expired;
   return <span className={`${styles.badge} ${styles[cls]}`}>{label}</span>;
 }
