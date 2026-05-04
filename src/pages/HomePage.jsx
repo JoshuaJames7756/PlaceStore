@@ -35,15 +35,22 @@ const STEPS = [
 
 export default function HomePage() {
   const { isSignedIn } = useAuth();
-  const navigate       = useNavigate();
-  const heroRef        = useRef(null);
+  const navigate = useNavigate();
+  const heroRef = useRef(null);
 
-  // Parallax sutil en el hero
   useEffect(() => {
+    let ticking = false;
     function onScroll() {
-      if (!heroRef.current) return;
-      const y = window.scrollY;
-      heroRef.current.style.setProperty('--scroll-y', `${y * 0.3}px`);
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          if (heroRef.current) {
+            const y = window.scrollY;
+            heroRef.current.style.setProperty('--scroll-y', `${y * 0.25}px`);
+          }
+          ticking = false;
+        });
+        ticking = true;
+      }
     }
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
@@ -55,22 +62,25 @@ export default function HomePage() {
 
   return (
     <div className={styles.page}>
+
       {/* Nav */}
       <nav className={styles.nav}>
-        <span className={styles.navBrand}>PlaceStore</span>
-        <div className={styles.navRight}>
-          <Link to="/feed" className={styles.navLink}>Explorar</Link>
-          {isSignedIn ? (
-            <Link to="/dashboard" className="btn btn-primary" style={{ fontSize: '0.875rem' }}>
-              Mi panel →
-            </Link>
-          ) : (
-            <SignInButton mode="modal">
-              <button className="btn btn-primary" style={{ fontSize: '0.875rem' }}>
-                Crear mi tienda
-              </button>
-            </SignInButton>
-          )}
+        <div className={styles.navInner}>
+          <span className={styles.navBrand}>PlaceStore</span>
+          <div className={styles.navRight}>
+            <Link to="/feed" className={styles.navLink}>Explorar</Link>
+            {isSignedIn ? (
+              <Link to="/dashboard" className="btn btn-primary" style={{ fontSize: '0.875rem' }}>
+                Mi panel →
+              </Link>
+            ) : (
+              <SignInButton mode="modal">
+                <button className="btn btn-primary" style={{ fontSize: '0.875rem' }}>
+                  Crear mi tienda
+                </button>
+              </SignInButton>
+            )}
+          </div>
         </div>
       </nav>
 
@@ -79,54 +89,58 @@ export default function HomePage() {
         <div className={styles.heroBg} aria-hidden="true">
           <div className={styles.heroDot} />
           <div className={styles.heroDot} />
-          <div className={styles.heroDot} />
-        </div>
-        <div className={styles.heroContent}>
-          <div className={styles.heroBadge}>🇧🇴 Hecho para negocios bolivianos</div>
-          <h1 className={styles.heroTitle}>
-            Tu catálogo online.<br />
-            <span className={styles.heroAccent}>Tus clientes en WhatsApp.</span>
-          </h1>
-          <p className={styles.heroDesc}>
-            Crea tu vitrina digital en minutos. Comparte tu link y recibe pedidos
-            directamente por WhatsApp, sin comisiones, sin complicaciones.
-          </p>
-          <div className={styles.heroCTAs}>
-            {isSignedIn ? (
-              <button className={`btn btn-primary ${styles.ctaMain}`} onClick={handleCTA}>
-                Ir a mi panel →
-              </button>
-            ) : (
-              <SignInButton mode="modal">
-                <button className={`btn btn-primary ${styles.ctaMain}`}>
-                  Empieza gratis — 30 días
-                </button>
-              </SignInButton>
-            )}
-            <Link to="/feed" className={`btn btn-ghost ${styles.ctaSecondary}`}>
-              Ver catálogos
-            </Link>
-          </div>
-          <p className={styles.heroSub}>Sin tarjeta de crédito · Sin instalaciones · Bs 70/mes después del trial</p>
         </div>
 
-        {/* Mock de vitrina flotante */}
-        <div className={styles.heroMock} aria-hidden="true">
-          <div className={styles.mockPhone}>
-            <div className={styles.mockBar} />
-            <div className={styles.mockStore}>
-              <div className={styles.mockLogo} />
-              <div className={styles.mockStoreName} />
+        {/* heroInner centra el grid sin romper el fondo full-width */}
+        <div className={styles.heroInner}>
+          <div className={styles.heroContent}>
+            <div className={styles.heroBadge}>
+              <span className={styles.badgeIcon}>🇧🇴</span> Hecho para negocios bolivianos
             </div>
-            <div className={styles.mockGrid}>
-              {[...Array(6)].map((_, i) => (
-                <div key={i} className={styles.mockCard}>
-                  <div className={styles.mockImg} style={{ animationDelay: `${i * 0.15}s` }} />
-                  <div className={styles.mockName} />
-                  <div className={styles.mockPrice} />
-                  <div className={styles.mockBtn} />
-                </div>
-              ))}
+            <h1 className={styles.heroTitle}>
+              Tu catálogo online.<br />
+              <span className={styles.heroAccent}>Tus clientes en WhatsApp.</span>
+            </h1>
+            <p className={styles.heroDesc}>
+              Crea tu vitrina digital en minutos. Comparte tu link y recibe pedidos
+              directamente por WhatsApp, sin comisiones ni complicaciones.
+            </p>
+            <div className={styles.heroCTAs}>
+              {isSignedIn ? (
+                <button className={`btn btn-primary ${styles.ctaMain}`} onClick={handleCTA}>
+                  Ir a mi panel →
+                </button>
+              ) : (
+                <SignInButton mode="modal">
+                  <button className={`btn btn-primary ${styles.ctaMain}`}>
+                    Empieza gratis — 30 días
+                  </button>
+                </SignInButton>
+              )}
+              <Link to="/feed" className={`btn btn-ghost ${styles.ctaSecondary}`}>
+                Ver catálogos
+              </Link>
+            </div>
+            <p className={styles.heroSub}>Sin tarjeta de crédito · Bs 70/mes después del trial</p>
+          </div>
+
+          <div className={styles.heroMock} aria-hidden="true">
+            <div className={styles.mockPhone}>
+              <div className={styles.mockBar} />
+              <div className={styles.mockStore}>
+                <div className={styles.mockLogo} />
+                <div className={styles.mockStoreName} />
+              </div>
+              <div className={styles.mockGrid}>
+                {[...Array(6)].map((_, i) => (
+                  <div key={i} className={styles.mockCard}>
+                    <div className={styles.mockImg} style={{ animationDelay: `${i * 0.1}s` }} />
+                    <div className={styles.mockName} />
+                    <div className={styles.mockPrice} />
+                    <div className={styles.mockBtn} />
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         </div>
@@ -139,7 +153,9 @@ export default function HomePage() {
           <div className={styles.featuresGrid}>
             {FEATURES.map(f => (
               <div key={f.title} className={styles.featureCard}>
-                <span className={styles.featureIcon}>{f.icon}</span>
+                <div className={styles.featureIconContainer}>
+                  <span className={styles.featureIcon}>{f.icon}</span>
+                </div>
                 <h3 className={styles.featureTitle}>{f.title}</h3>
                 <p className={styles.featureDesc}>{f.desc}</p>
               </div>
@@ -151,12 +167,17 @@ export default function HomePage() {
       {/* Cómo funciona */}
       <section className={styles.howto}>
         <div className={styles.sectionInner}>
-          <h2 className={styles.sectionTitle}>¿Cómo funciona?</h2>
+          <div className={styles.centeredHeader}>
+            <h2 className={styles.sectionTitle}>¿Cómo funciona?</h2>
+            <p className={styles.sectionSubtitle}>Tres pasos para digitalizar tu negocio hoy mismo.</p>
+          </div>
           <div className={styles.steps}>
             {STEPS.map((s, i) => (
               <div key={s.n} className={styles.step}>
-                <div className={styles.stepNum}>{s.n}</div>
-                {i < STEPS.length - 1 && <div className={styles.stepConnector} />}
+                <div className={styles.stepHeader}>
+                  <div className={styles.stepNum}>{s.n}</div>
+                  {i < STEPS.length - 1 && <div className={styles.stepConnector} />}
+                </div>
                 <h3 className={styles.stepTitle}>{s.title}</h3>
                 <p className={styles.stepDesc}>{s.desc}</p>
               </div>
@@ -171,29 +192,30 @@ export default function HomePage() {
           <h2 className={styles.sectionTitle}>Un precio. Sin sorpresas.</h2>
           <div className={styles.priceCard}>
             <div className={styles.priceLeft}>
-              <p className={styles.planLabel}>Plan Básico</p>
+              <p className={styles.planLabel}>Plan Profesional</p>
               <p className={styles.planPrice}>Bs 70 <span>/mes</span></p>
-              <p className={styles.planTrial}>30 días gratis para empezar</p>
+              <p className={styles.planTrial}>Prueba gratuita de 30 días</p>
             </div>
             <ul className={styles.priceFeatures}>
-              <li>✓ Productos ilimitados</li>
-              <li>✓ Imágenes por producto</li>
-              <li>✓ WhatsApp directo</li>
-              <li>✓ Tu URL propia</li>
-              <li>✓ Estadísticas de vistas</li>
-              <li>✓ Categorías</li>
+              <li><span className={styles.check}>✓</span> Productos ilimitados</li>
+              <li><span className={styles.check}>✓</span> Imágenes en alta calidad</li>
+              <li><span className={styles.check}>✓</span> Pedidos directo a WhatsApp</li>
+              <li><span className={styles.check}>✓</span> Link personalizado</li>
+              <li><span className={styles.check}>✓</span> Panel de estadísticas</li>
             </ul>
-            {isSignedIn ? (
-              <Link to="/dashboard" className={`btn btn-primary ${styles.priceCTA}`}>
-                Ir a mi panel →
-              </Link>
-            ) : (
-              <SignInButton mode="modal">
-                <button className={`btn btn-primary ${styles.priceCTA}`}>
-                  Empezar gratis
+            <div className={styles.priceAction}>
+              {isSignedIn ? (
+                <button className={`btn btn-primary ${styles.priceCTA}`} onClick={handleCTA}>
+                  Ir a mi panel →
                 </button>
-              </SignInButton>
-            )}
+              ) : (
+                <SignInButton mode="modal">
+                  <button className={`btn btn-primary ${styles.priceCTA}`}>
+                    Empezar gratis
+                  </button>
+                </SignInButton>
+              )}
+            </div>
           </div>
         </div>
       </section>
@@ -201,11 +223,17 @@ export default function HomePage() {
       {/* Footer */}
       <footer className={styles.footer}>
         <div className={styles.footerInner}>
-          <span className={styles.footerBrand}>PlaceStore</span>
-          <p className={styles.footerText}>Catálogos digitales para el comercio boliviano</p>
-          <Link to="/feed" className={styles.footerLink}>Explorar catálogos</Link>
+          <div className={styles.footerInfo}>
+            <span className={styles.footerBrand}>PlaceStore</span>
+            <p className={styles.footerText}>Impulsando el comercio digital en Bolivia.</p>
+          </div>
+          <div className={styles.footerLinks}>
+            <Link to="/feed" className={styles.footerLink}>Explorar tiendas</Link>
+            <span className={styles.footerCredit}>© 2026 JVSoftware</span>
+          </div>
         </div>
       </footer>
+
     </div>
   );
 }

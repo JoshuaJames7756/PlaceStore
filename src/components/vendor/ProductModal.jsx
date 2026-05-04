@@ -6,8 +6,8 @@ export default function ProductModal({ product, categories, onSave, onClose, onN
   const isEdit = !!product;
 
   const [form, setForm] = useState({
-    name:        product?.name        || '',
-    price_bs:    product?.price_bs    || '',
+    name:         product?.name         || '',
+    price_bs:     product?.price_bs     || '',
     description: product?.description || '',
     category_id: product?.category_id || '',
     is_available: product?.is_available ?? true,
@@ -77,7 +77,7 @@ export default function ProductModal({ product, categories, onSave, onClose, onN
   }
 
   async function handleSubmit() {
-    if (!form.name.trim())         { setError('Nombre requerido'); return; }
+    if (!form.name.trim())          { setError('Nombre requerido'); return; }
     if (!form.price_bs || Number(form.price_bs) <= 0) { setError('Precio inválido'); return; }
 
     setSaving(true);
@@ -85,7 +85,7 @@ export default function ProductModal({ product, categories, onSave, onClose, onN
     try {
       await onSave({
         ...form,
-        price_bs:    Number(form.price_bs),
+        price_bs:     Number(form.price_bs),
         category_id: form.category_id || null,
         images,
       });
@@ -100,22 +100,22 @@ export default function ProductModal({ product, categories, onSave, onClose, onN
       <div className={styles.modal}>
         <div className={styles.modalHeader}>
           <h2 className={styles.modalTitle}>{isEdit ? 'Editar producto' : 'Nuevo producto'}</h2>
-          <button className={styles.closeBtn} onClick={onClose}>✕</button>
+          <button className={styles.closeBtn} onClick={onClose} aria-label="Cerrar">✕</button>
         </div>
 
         <div className={styles.body}>
           {/* Imágenes */}
           <div className={styles.section}>
-            <p className={styles.sectionLabel}>Imágenes</p>
+            <p className={styles.sectionLabel}>Imágenes del producto</p>
             <div className={styles.imgGrid}>
               {images.map((img, idx) => (
                 <div key={idx} className={`${styles.imgThumb} ${img.is_primary ? styles.imgPrimary : ''}`}>
-                  <img src={img.url} alt="" />
+                  <img src={img.url} alt="" loading="lazy" />
                   <div className={styles.imgOverlay}>
                     {!img.is_primary && (
-                      <button className={styles.imgBtn} onClick={() => setPrimary(idx)} title="Principal">★</button>
+                      <button className={styles.imgBtn} onClick={() => setPrimary(idx)} title="Hacer principal">★</button>
                     )}
-                    <button className={styles.imgBtn} onClick={() => removeImage(idx)} title="Eliminar">✕</button>
+                    <button className={`${styles.imgBtn} ${styles.imgBtnDelete}`} onClick={() => removeImage(idx)} title="Eliminar">✕</button>
                   </div>
                   {img.is_primary && <span className={styles.primaryTag}>Principal</span>}
                 </div>
@@ -126,8 +126,9 @@ export default function ProductModal({ product, categories, onSave, onClose, onN
                   className={styles.addImg}
                   onClick={() => fileRef.current?.click()}
                   disabled={uploading}
+                  type="button"
                 >
-                  {uploading ? '⏳' : '+'}
+                  <span className={styles.addIcon}>{uploading ? '⏳' : '+'}</span>
                   <span>{uploading ? 'Subiendo...' : 'Agregar'}</span>
                 </button>
               )}
@@ -135,36 +136,39 @@ export default function ProductModal({ product, categories, onSave, onClose, onN
             <input ref={fileRef} type="file" accept="image/*" className={styles.fileInput} onChange={handleFile} />
           </div>
 
-          {/* Nombre */}
-          <label className={styles.label}>
-            Nombre del producto
-            <input
-              className={styles.input}
-              name="name"
-              value={form.name}
-              onChange={handleChange}
-              placeholder="Ej: Camiseta polo blanca"
-              maxLength={120}
-            />
-          </label>
-
-          {/* Precio */}
-          <label className={styles.label}>
-            Precio (Bs)
-            <div className={styles.prefixWrap}>
-              <span className={styles.prefix}>Bs</span>
+          <div className={styles.formGrid}>
+            {/* Nombre */}
+            <label className={styles.label}>
+              Nombre del producto
               <input
-                className={`${styles.input} ${styles.inputPrefixed}`}
-                name="price_bs"
-                value={form.price_bs}
+                className={styles.input}
+                name="name"
+                value={form.name}
                 onChange={handleChange}
-                placeholder="0.00"
-                type="number"
-                min="0"
-                step="0.50"
+                placeholder="Ej: Camiseta polo blanca"
+                maxLength={120}
+                required
               />
-            </div>
-          </label>
+            </label>
+
+            {/* Precio */}
+            <label className={styles.label}>
+              Precio de venta
+              <div className={styles.prefixWrap}>
+                <span className={styles.prefix}>Bs</span>
+                <input
+                  className={`${styles.input} ${styles.inputPrefixed}`}
+                  name="price_bs"
+                  value={form.price_bs}
+                  onChange={handleChange}
+                  placeholder="0.00"
+                  type="number"
+                  min="0"
+                  step="0.50"
+                />
+              </div>
+            </label>
+          </div>
 
           {/* Descripción */}
           <label className={styles.label}>
@@ -174,64 +178,69 @@ export default function ProductModal({ product, categories, onSave, onClose, onN
               name="description"
               value={form.description}
               onChange={handleChange}
-              placeholder="Describe el producto brevemente..."
+              placeholder="Describe los detalles, tallas o materiales..."
               rows={3}
               maxLength={500}
             />
           </label>
 
           {/* Categoría */}
-          <label className={styles.label}>
-            Categoría <span className={styles.optional}>(opcional)</span>
-            <select
-              className={styles.input}
-              name="category_id"
-              value={form.category_id}
-              onChange={handleChange}
-            >
-              <option value="">Sin categoría</option>
-              {categories.map(c => (
-                <option key={c.id} value={c.id}>{c.name}</option>
-              ))}
-            </select>
-          </label>
+          <div className={styles.categorySection}>
+            <label className={styles.label}>
+              Categoría <span className={styles.optional}>(opcional)</span>
+              <select
+                className={styles.input}
+                name="category_id"
+                value={form.category_id}
+                onChange={handleChange}
+              >
+                <option value="">Sin categoría</option>
+                {categories.map(c => (
+                  <option key={c.id} value={c.id}>{c.name}</option>
+                ))}
+              </select>
+            </label>
 
-          {/* Nueva categoría inline */}
-          <div className={styles.newCatRow}>
-            <input
-              className={styles.input}
-              value={newCat}
-              onChange={e => setNewCat(e.target.value)}
-              placeholder="Nueva categoría..."
-              onKeyDown={e => e.key === 'Enter' && handleAddCat()}
-            />
-            <button
-              className="btn btn-ghost"
-              onClick={handleAddCat}
-              disabled={addingCat || !newCat.trim()}
-            >
-              {addingCat ? '...' : '+ Crear'}
-            </button>
+            {/* Nueva categoría inline */}
+            <div className={styles.newCatRow}>
+              <input
+                className={styles.input}
+                value={newCat}
+                onChange={e => setNewCat(e.target.value)}
+                placeholder="Crear nueva..."
+                onKeyDown={e => e.key === 'Enter' && handleAddCat()}
+              />
+              <button
+                className="btn btn-ghost"
+                onClick={handleAddCat}
+                disabled={addingCat || !newCat.trim()}
+                type="button"
+              >
+                {addingCat ? '...' : 'Añadir'}
+              </button>
+            </div>
           </div>
 
           {/* Disponibilidad */}
           <label className={styles.checkLabel}>
-            <input
-              type="checkbox"
-              name="is_available"
-              checked={form.is_available}
-              onChange={handleChange}
-            />
-            Disponible para la venta
+            <div className={styles.checkboxCustom}>
+               <input
+                type="checkbox"
+                name="is_available"
+                checked={form.is_available}
+                onChange={handleChange}
+              />
+            </div>
+            <span>Disponible para la venta inmediata</span>
           </label>
 
-          {error && <p className={styles.error}>{error}</p>}
+          {error && <div className={styles.error}>{error}</div>}
         </div>
 
         <div className={styles.footer}>
-          <button className="btn btn-ghost" onClick={onClose}>Cancelar</button>
+          <button className="btn btn-ghost" onClick={onClose} type="button">Cancelar</button>
           <button className="btn btn-primary" onClick={handleSubmit} disabled={saving}>
-            {saving ? 'Guardando...' : isEdit ? 'Guardar cambios' : 'Crear producto'}
+            {saving ? 'Guardando...' : isEdit ? 'Actualizar producto' : 'Publicar producto'}
           </button>
         </div>
       </div>

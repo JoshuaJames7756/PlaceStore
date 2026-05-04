@@ -1,4 +1,3 @@
-/* src/assets/css/variables.css */
 :root {
   /* ─── Paleta base JVSoftware / PlaceStore ─── */
   --color-bg:        #fdfcf8;
@@ -15,6 +14,12 @@
   --color-border:    #e8e8e2;
   --color-border-2:  #d4d4cc;
 
+  /* ─── Agregados Premium ─── */
+  --color-white:     #ffffff;
+  --glass-bg:        rgba(253, 252, 248, 0.8);
+  --glass-border:    rgba(232, 232, 226, 0.5);
+  --blur-md:         12px;
+
   /* ─── Tipografía ─── */
   --font-main:  "DM Sans", system-ui, sans-serif;
   --font-mono:  "JetBrains Mono", monospace;
@@ -28,19 +33,22 @@
   --space-6:  32px;
   --space-7:  48px;
   --space-8:  64px;
+  --space-9:  80px;
+  --space-10: 100px;
+  --space-12: 120px;
 
   /* ─── Radios ─── */
-  --radius-sm:  6px;
-  --radius-md:  12px;
-  --radius-lg:  20px;
-  --radius-xl:  32px;
+  --radius-sm:   6px;
+  --radius-md:   12px;
+  --radius-lg:   20px;
+  --radius-xl:   32px;
   --radius-full: 9999px;
 
   /* ─── Sombras ─── */
-  --shadow-sm:  0 1px 3px rgba(0, 0, 0, 0.06);
-  --shadow-md:  0 4px 16px rgba(0, 0, 0, 0.08);
-  --shadow-lg:  0 8px 32px rgba(0, 0, 0, 0.10);
+  --shadow-sm:  0 2px 4px rgba(0, 0, 0, 0.04);
+  --shadow-md:  0 8px 24px rgba(0, 0, 0, 0.06);
+  --shadow-lg:  0 16px 48px rgba(0, 0, 0, 0.08);
 
   /* ─── Transiciones ─── */
-  --transition: 0.18s ease;
+  --transition: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }

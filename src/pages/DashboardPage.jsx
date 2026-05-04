@@ -27,7 +27,7 @@ export default function DashboardPage() {
       .then(d => setStats(d.stats))
       .catch(() => {})
       .finally(() => setStatsLoading(false));
-  }, [store]);
+  }, [store, getToken]);
 
   if (storeLoading) return <div className={styles.center}><span className={styles.spinner} /></div>;
   if (error) return <div style={{ color: 'red', padding: '2rem' }}>Error: {error}</div>;
@@ -104,7 +104,7 @@ export default function DashboardPage() {
         <SubBanner status={subStatus} diasRestantes={diasRestantes} />
 
         {/* Perfil de tienda */}
-        <div className={styles.storeProfile}>
+        <section className={styles.storeProfile}>
           <div className={styles.logoWrap} onClick={() => logoRef.current?.click()}>
             {uploadingLogo ? (
               <div className={styles.logoLoading}><span className={styles.spinner} /></div>
@@ -122,18 +122,18 @@ export default function DashboardPage() {
           </div>
           <input ref={logoRef} type="file" accept="image/*" style={{ display: 'none' }} onChange={handleLogoChange} />
           <div className={styles.storeInfo}>
-            <p className={styles.storeNameBig}>{store.store_name}</p>
-            <p className={styles.storeCity}>📍 {store.location_city}</p>
+            <h1 className={styles.storeNameBig}>{store.store_name}</h1>
+            <p className={styles.storeCity}>📍 {store.location_city} · <span className={styles.storeSlug}>/{store.slug}</span></p>
             <p className={styles.logoHint}>
-              {store.logo_url ? 'Haz clic en el logo para cambiarlo' : 'Haz clic para agregar tu logo'}
+              {store.logo_url ? 'Haz clic en el logo para actualizarlo' : 'Personaliza tu marca subiendo un logo'}
             </p>
           </div>
-        </div>
+        </section>
 
         {/* Enlace catálogo */}
         <div className={styles.catalogCard}>
           <div className={styles.catalogInfo}>
-            <p className={styles.catalogLabel}>Tu catálogo público</p>
+            <p className={styles.catalogLabel}>Enlace de tu vitrina</p>
             <a href={catalogUrl} target="_blank" rel="noreferrer" className={styles.catalogUrl}>{catalogUrl}</a>
           </div>
           <div className={styles.catalogActions}>
@@ -141,7 +141,7 @@ export default function DashboardPage() {
               {copied ? '✓ Copiado' : 'Copiar enlace'}
             </button>
             <a
-              href={'https://wa.me/?text=' + encodeURIComponent('Mira mi catálogo: ' + catalogUrl)}
+              href={'https://wa.me/?text=' + encodeURIComponent('Te invito a ver mi catálogo en PlaceStore: ' + catalogUrl)}
               target="_blank" rel="noreferrer"
               className="btn btn-primary"
               style={{ fontSize: '0.875rem' }}
@@ -154,28 +154,37 @@ export default function DashboardPage() {
         {/* Stats */}
         <div className={styles.statsGrid}>
           <StatCard label="Productos activos" value={statsLoading ? '—' : stats?.available_products ?? 0} icon="📦" sub={statsLoading ? '' : `${stats?.total_products ?? 0} en total`} />
-          <StatCard label="Vistas al catálogo" value={statsLoading ? '—' : stats?.total_views ?? 0} icon="👁️" sub="desde el inicio" />
-          <StatCard label="Categorías" value={statsLoading ? '—' : stats?.total_categories ?? 0} icon="🗂️" sub="creadas" />
-          <StatCard label="Producto más visto" value={statsLoading ? '—' : stats?.top_product?.name || 'Sin datos'} icon="🏆" sub={stats?.top_product ? `${stats.top_product.views_count} vistas` : ''} small />
+          <StatCard label="Vistas totales" value={statsLoading ? '—' : stats?.total_views ?? 0} icon="👁️" sub="Desde la creación" />
+          <StatCard label="Categorías" value={statsLoading ? '—' : stats?.total_categories ?? 0} icon="🗂️" sub="Organización" />
+          <StatCard label="Más popular" value={statsLoading ? '—' : stats?.top_product?.name || 'Sin datos'} icon="🏆" sub={stats?.top_product ? `${stats.top_product.views_count} visitas` : 'Empieza a vender'} small />
         </div>
 
         {/* Acciones rápidas */}
         <div className={styles.quickActions}>
-          <h2 className={styles.sectionTitle}>Acciones rápidas</h2>
+          <h2 className={styles.sectionTitle}>Panel de Control</h2>
           <div className={styles.actionGrid}>
             <Link to="/dashboard/productos" className={styles.actionCard}>
               <span className={styles.actionIcon}>📦</span>
-              <span className={styles.actionLabel}>Gestionar productos</span>
+              <div className={styles.actionText}>
+                <span className={styles.actionLabel}>Inventario</span>
+                <span className={styles.actionDesc}>Sube y edita tus productos</span>
+              </div>
               <span className={styles.actionArrow}>→</span>
             </Link>
             <Link to="/dashboard/suscripcion" className={styles.actionCard}>
               <span className={styles.actionIcon}>💳</span>
-              <span className={styles.actionLabel}>Mi suscripción</span>
+              <div className={styles.actionText}>
+                <span className={styles.actionLabel}>Facturación</span>
+                <span className={styles.actionDesc}>Gestiona tu suscripción</span>
+              </div>
               <span className={styles.actionArrow}>→</span>
             </Link>
             <a href={catalogUrl} target="_blank" rel="noreferrer" className={styles.actionCard}>
               <span className={styles.actionIcon}>🛍️</span>
-              <span className={styles.actionLabel}>Ver mi vitrina</span>
+              <div className={styles.actionText}>
+                <span className={styles.actionLabel}>Vista pública</span>
+                <span className={styles.actionDesc}>Mira cómo lo ven tus clientes</span>
+              </div>
               <span className={styles.actionArrow}>↗</span>
             </a>
           </div>
@@ -190,14 +199,20 @@ function SubBanner({ status, diasRestantes }) {
   if (status === 'trial') {
     return (
       <div className={`${styles.banner} ${styles.bannerTrial}`}>
-        <span>🕐 Período de prueba — {diasRestantes} día{diasRestantes !== 1 ? 's' : ''} restante{diasRestantes !== 1 ? 's' : ''}</span>
-        <Link to="/dashboard/suscripcion" className={styles.bannerLink}>Activar plan →</Link>
+        <div className={styles.bannerMain}>
+          <span className={styles.bannerIcon}>🕐</span>
+          <span>Período de prueba — <strong>{diasRestantes} día{diasRestantes !== 1 ? 's' : ''}</strong> restante{diasRestantes !== 1 ? 's' : ''}</span>
+        </div>
+        <Link to="/dashboard/suscripcion" className={styles.bannerLink}>Activar plan ahora →</Link>
       </div>
     );
   }
   return (
     <div className={`${styles.banner} ${styles.bannerExpired}`}>
-      <span>⚠️ Tu suscripción ha vencido. Tu catálogo no está visible.</span>
+      <div className={styles.bannerMain}>
+        <span className={styles.bannerIcon}>⚠️</span>
+        <span>Suscripción vencida. Tu catálogo está oculto para los clientes.</span>
+      </div>
       <Link to="/dashboard/suscripcion" className={styles.bannerLink}>Renovar ahora →</Link>
     </div>
   );
@@ -206,9 +221,11 @@ function SubBanner({ status, diasRestantes }) {
 function StatCard({ label, value, icon, sub, small }) {
   return (
     <div className={styles.statCard}>
-      <span className={styles.statIcon}>{icon}</span>
+      <header className={styles.statHeader}>
+        <span className={styles.statIcon}>{icon}</span>
+        <span className={styles.statLabel}>{label}</span>
+      </header>
       <p className={`${styles.statValue} ${small ? styles.statValueSmall : ''}`}>{value}</p>
-      <p className={styles.statLabel}>{label}</p>
       {sub && <p className={styles.statSub}>{sub}</p>}
     </div>
   );

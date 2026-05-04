@@ -18,10 +18,10 @@ export default function OnboardingPage() {
   const { getToken }    = useAuth();
   const fileRef         = useRef(null);
 
-  const [step, setStep]         = useState(0);
-  const [loading, setLoading]   = useState(false);
+  const [step, setStep]           = useState(0);
+  const [loading, setLoading]     = useState(false);
   const [uploading, setUploading] = useState(false);
-  const [error, setError]       = useState('');
+  const [error, setError]         = useState('');
   const [logoPreview, setLogoPreview] = useState(null);
 
   const [form, setForm] = useState({
@@ -106,7 +106,7 @@ export default function OnboardingPage() {
           <p className={styles.subtitle}>Configura tu vitrina en 2 minutos</p>
         </div>
 
-        {/* Stepper */}
+        {/* Stepper Mejorado */}
         <div className={styles.stepper}>
           {STEPS.map((label, i) => (
             <div key={label} className={styles.stepItem}>
@@ -123,11 +123,11 @@ export default function OnboardingPage() {
           ))}
         </div>
 
-        {/* Paso 0 */}
+        {/* Paso 0: Identidad */}
         {step === 0 && (
           <div className={styles.fields}>
-            <label className={styles.label}>
-              Nombre de tu tienda
+            <div className={styles.inputGroup}>
+              <label className={styles.label}>Nombre de tu tienda</label>
               <input
                 className={styles.input}
                 name="store_name"
@@ -137,10 +137,10 @@ export default function OnboardingPage() {
                 maxLength={80}
                 autoFocus
               />
-            </label>
+            </div>
 
-            <label className={styles.label}>
-              Ciudad
+            <div className={styles.inputGroup}>
+              <label className={styles.label}>Ciudad</label>
               <select
                 className={styles.input}
                 name="location_city"
@@ -152,7 +152,7 @@ export default function OnboardingPage() {
                   <option key={c} value={c}>{c}</option>
                 ))}
               </select>
-            </label>
+            </div>
 
             {error && <p className={styles.error}>{error}</p>}
 
@@ -162,13 +162,13 @@ export default function OnboardingPage() {
           </div>
         )}
 
-        {/* Paso 1 */}
+        {/* Paso 1: Contacto y Logo */}
         {step === 1 && (
           <div className={styles.fields}>
-            <label className={styles.label}>
-              Número de WhatsApp
+            <div className={styles.inputGroup}>
+              <label className={styles.label}>Número de WhatsApp</label>
               <div className={styles.prefixWrap}>
-                <span className={styles.prefix}>+591</span>
+                <span className={styles.prefix}>🇧🇴 +591</span>
                 <input
                   className={`${styles.input} ${styles.inputPrefixed}`}
                   name="whatsapp_number"
@@ -180,23 +180,37 @@ export default function OnboardingPage() {
                   autoFocus
                 />
               </div>
-              <small className={styles.hint}>Los clientes te escribirán a este número</small>
-            </label>
+              <small className={styles.hint}>Tus clientes te contactarán aquí</small>
+            </div>
 
-            {/* Logo picker */}
-            <div className={styles.label}>
-              <span>Logo de tu tienda <span className={styles.optional}>(opcional)</span></span>
-              <div className={styles.logoPicker} onClick={() => fileRef.current?.click()}>
-                {logoPreview ? (
-                  <img src={logoPreview} alt="Logo" className={styles.logoPreview} />
-                ) : (
-                  <div className={styles.logoPlaceholder}>
-                    {uploading ? <span className={styles.uploadSpinner} /> : <span>＋ Subir logo</span>}
-                  </div>
-                )}
-                {logoPreview && !uploading && (
-                  <div className={styles.logoOverlay}>Cambiar</div>
-                )}
+            <div className={styles.inputGroup}>
+              <label className={styles.label}>
+                Logo de tu tienda <span className={styles.optional}>(opcional)</span>
+              </label>
+              <div className={styles.logoPickerContainer}>
+                <div className={styles.logoPicker} onClick={() => fileRef.current?.click()}>
+                  {logoPreview ? (
+                    <img src={logoPreview} alt="Logo Preview" className={styles.logoPreview} />
+                  ) : (
+                    <div className={styles.logoPlaceholder}>
+                      {uploading ? (
+                        <span className={styles.uploadSpinner} />
+                      ) : (
+                        <>
+                          <span className={styles.plusIcon}>＋</span>
+                          <span>Subir logo</span>
+                        </>
+                      )}
+                    </div>
+                  )}
+                  {logoPreview && !uploading && (
+                    <div className={styles.logoOverlay}>Cambiar logo</div>
+                  )}
+                </div>
+                <div className={styles.logoInfo}>
+                  <p className={styles.logoHintTitle}>Recomendado</p>
+                  <p className={styles.logoHintText}>JPG o PNG, máx. 5MB. Se verá en tu catálogo.</p>
+                </div>
               </div>
               <input
                 ref={fileRef}
@@ -205,7 +219,6 @@ export default function OnboardingPage() {
                 style={{ display: 'none' }}
                 onChange={handleLogoFile}
               />
-              <small className={styles.hint}>También puedes agregarlo desde tu panel</small>
             </div>
 
             {error && <p className={styles.error}>{error}</p>}
@@ -219,20 +232,22 @@ export default function OnboardingPage() {
           </div>
         )}
 
-        {/* Paso 2: éxito */}
+        {/* Paso 2: Éxito con Animación */}
         {step === 2 && (
           <div className={styles.success}>
-            <div className={styles.successIcon}>🎉</div>
+            <div className={styles.successIconWrapper}>
+              <div className={styles.successIcon}>🎉</div>
+              <div className={styles.confetti} />
+            </div>
             <h2 className={styles.successTitle}>¡Tu tienda está lista!</h2>
             <p className={styles.successText}>
-              Tienes <strong>30 días gratis</strong> para explorar PlaceStore.
-              Agrega tus productos y empieza a vender por WhatsApp.
+              Bienvenido, <strong>{form.store_name}</strong>. Tienes <strong>30 días gratis</strong> para explorar todas las funciones.
             </p>
             <button
-              className={`btn btn-primary ${styles.btnFull}`}
+              className={`btn btn-primary ${styles.btnFull} ${styles.pulseBtn}`}
               onClick={() => navigate('/dashboard/productos')}
             >
-              Agregar mis productos →
+              Comenzar a vender →
             </button>
           </div>
         )}
