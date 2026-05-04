@@ -78,6 +78,8 @@
   display: flex;
   flex-direction: column;
   gap: var(--space-5);
+  /* Soporte suave para scroll en móviles */
+  -webkit-overflow-scrolling: touch; 
 }
 
 .body::-webkit-scrollbar {
@@ -110,6 +112,8 @@
   position: relative;
   border: 2px solid var(--color-border);
   transition: transform var(--transition), border-color var(--transition);
+  /* Evita que se encojan en flexbox */
+  flex-shrink: 0; 
 }
 
 .imgThumb:hover {
@@ -135,8 +139,15 @@
   align-items: center;
   justify-content: center;
   gap: var(--space-2);
+  /* En móviles, dejamos los botones visibles o más fáciles de activar */
   opacity: 0;
   transition: opacity var(--transition);
+}
+
+/* Permitir que los botones sean visibles en pantallas táctiles sin hover */
+@media (hover: none) {
+  .imgOverlay { opacity: 1; background: rgba(0,0,0,0.2); }
+  .imgBtn { width: 34px; height: 34px; } /* Botones un poco más grandes para dedos */
 }
 
 .imgThumb:hover .imgOverlay {
@@ -184,6 +195,7 @@
   justify-content: center;
   transition: all var(--transition);
   color: var(--color-text-3);
+  flex-shrink: 0;
 }
 
 .addIcon {
@@ -226,9 +238,10 @@
   padding: var(--space-3) var(--space-4);
   border: 1.5px solid var(--color-border);
   border-radius: var(--radius-md);
-  font-size: 0.9375rem;
+  font-size: 16px; /* Evita zoom automático en iOS */
   background: #fff;
   transition: all var(--transition);
+  width: 100%;
 }
 
 .input:focus, .textarea:focus {
@@ -263,6 +276,7 @@
 .prefix {
   padding: 0 var(--space-3);
   height: 100%;
+  min-height: 44px; /* Altura mínima para touch */
   display: flex;
   align-items: center;
   background: var(--color-surface);
@@ -307,12 +321,12 @@
   font-size: 0.9rem;
   font-weight: 500;
   cursor: pointer;
-  padding: var(--space-1) 0;
+  padding: var(--space-2) 0; /* Más área de click */
 }
 
 .checkboxCustom {
-  width: 20px;
-  height: 20px;
+  width: 22px; /* Un poco más grande para móviles */
+  height: 22px;
   accent-color: var(--color-cta);
 }
 
@@ -335,9 +349,73 @@
   padding: var(--space-5) var(--space-6);
   border-top: 1px solid var(--color-border);
   background: var(--color-bg);
+  flex-shrink: 0;
+}
+
+/* --- MEJORAS PARA TABLETS Y TELÉFONOS --- */
+
+@media (max-width: 768px) {
+  .modal {
+    max-width: 90%;
+  }
+  
+  .imgThumb, .addImg {
+    width: 78px;
+    height: 78px;
+  }
 }
 
 @media (max-width: 480px) {
-  .formGrid { grid-template-columns: 1fr; }
-  .modal { max-height: 100dvh; border-radius: 0; }
+  .overlay {
+    padding: 0; /* Modal ocupa todo el ancho */
+    align-items: flex-end; /* Efecto bottom-sheet */
+  }
+
+  .modal {
+    max-height: 100dvh;
+    height: 100dvh; /* En móviles muy pequeños, mejor pantalla completa */
+    border-radius: 0;
+  }
+
+  .modalHeader {
+    padding: var(--space-4);
+  }
+
+  .body {
+    padding: var(--space-4);
+  }
+
+  .formGrid { 
+    grid-template-columns: 1fr; /* Apilar columnas en móvil */
+    gap: var(--space-3);
+  }
+
+  .footer {
+    padding: var(--space-4);
+    flex-direction: column-reverse; /* Botón principal arriba en móviles si lo deseas, o simplemente apilados */
+  }
+
+  .footer button {
+    width: 100%; /* Botones de ancho completo para pulgares */
+    padding: var(--space-4);
+  }
+  
+  .imgGrid {
+    justify-content: flex-start;
+    gap: var(--space-2);
+  }
+
+  .imgThumb, .addImg {
+    width: calc(33.33% - 8px); /* 3 por fila en móviles muy pequeños */
+    aspect-ratio: 1;
+    height: auto;
+  }
+}
+
+/* Para teléfonos en modo landscape o muy bajitos */
+@media (max-height: 500px) {
+  .modal {
+    height: 100dvh;
+    max-height: 100dvh;
+  }
 }
