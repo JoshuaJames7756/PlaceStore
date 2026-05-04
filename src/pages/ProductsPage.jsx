@@ -40,83 +40,117 @@ export default function ProductsPage() {
     await editarProducto({ id: product.id, is_available: !product.is_available });
   }
 
-  if (loading) return <div className={styles.center}>Cargando productos...</div>;
-  if (error)   return <div className={styles.center}>{error}</div>;
+  if (loading) return (
+    <div className={styles.center}>
+      <div className={styles.loader} />
+      <p>Cargando tus productos...</p>
+    </div>
+  );
+  
+  if (error) return (
+    <div className={styles.center}>
+      <p className={styles.errorText}>⚠️ {error}</p>
+    </div>
+  );
 
   return (
     <div className={styles.page}>
-      {/* Cabecera */}
+      {/* Cabecera con estadísticas rápidas */}
       <div className={styles.header}>
-        <div>
+        <div className={styles.titleGroup}>
           <h1 className={styles.title}>Mis productos</h1>
-          <p className={styles.count}>{products.length} producto{products.length !== 1 ? 's' : ''}</p>
+          <div className={styles.stats}>
+            <span className={styles.count}>{products.length} productos en total</span>
+            <span className={styles.dot}>•</span>
+            <span className={styles.countActive}>{products.filter(p => p.is_available).length} disponibles</span>
+          </div>
         </div>
-        <button className="btn btn-primary" onClick={() => setModal('create')}>
-          + Agregar producto
+        <button className={`btn btn-primary ${styles.addBtn}`} onClick={() => setModal('create')}>
+          <span className={styles.plus}>+</span> Agregar producto
         </button>
       </div>
 
-      {/* Filtros */}
-      <div className={styles.filters}>
-        <input
-          className={styles.search}
-          placeholder="Buscar producto..."
-          value={search}
-          onChange={e => setSearch(e.target.value)}
-        />
-        <select
-          className={styles.select}
-          value={filterCat}
-          onChange={e => setFilterCat(e.target.value)}
-        >
-          <option value="">Todas las categorías</option>
-          {categories.map(c => (
-            <option key={c.id} value={c.id}>{c.name}</option>
-          ))}
-        </select>
+      {/* Barra de herramientas: Filtros y Búsqueda */}
+      <div className={styles.toolbar}>
+        <div className={styles.searchWrapper}>
+          <span className={styles.searchIcon}>🔍</span>
+          <input
+            className={styles.search}
+            placeholder="Buscar por nombre..."
+            value={search}
+            onChange={e => setSearch(e.target.value)}
+          />
+        </div>
+        <div className={styles.selectWrapper}>
+          <select
+            className={styles.select}
+            value={filterCat}
+            onChange={e => setFilterCat(e.target.value)}
+          >
+            <option value="">Todas las categorías</option>
+            {categories.map(c => (
+              <option key={c.id} value={c.id}>{c.name}</option>
+            ))}
+          </select>
+        </div>
       </div>
 
-      {/* Lista */}
+      {/* Lista / Grid */}
       {filtered.length === 0 ? (
         <div className={styles.empty}>
-          {products.length === 0
-            ? 'Aún no tienes productos. ¡Agrega el primero!'
-            : 'No hay productos que coincidan con la búsqueda.'}
+          <div className={styles.emptyIcon}>{products.length === 0 ? '📦' : '🔍'}</div>
+          <p>
+            {products.length === 0
+              ? 'Aún no tienes productos. ¡Comienza a armar tu vitrina!'
+              : 'No encontramos productos que coincidan con tus filtros.'}
+          </p>
+          {products.length === 0 && (
+            <button className="btn btn-primary" onClick={() => setModal('create')}>
+              Crear mi primer producto
+            </button>
+          )}
         </div>
       ) : (
         <div className={styles.grid}>
           {filtered.map(product => (
             <div key={product.id} className={`${styles.card} ${!product.is_available ? styles.cardInactive : ''}`}>
-              {/* Imagen */}
+              {/* Imagen y Badge de disponibilidad */}
               <div className={styles.imgWrap}>
                 {product.images?.[0]
                   ? <img src={product.images[0].url} alt={product.name} className={styles.img} loading="lazy" />
-                  : <div className={styles.imgPlaceholder}>📦</div>
+                  : <div className={styles.imgPlaceholder}>🖼️</div>
                 }
                 <button
                   className={`${styles.badge} ${product.is_available ? styles.badgeOn : styles.badgeOff}`}
                   onClick={() => toggleDisponible(product)}
-                  title="Cambiar disponibilidad"
+                  title={product.is_available ? "Marcar como agotado" : "Marcar como disponible"}
                 >
+                  <div className={styles.statusDot} />
                   {product.is_available ? 'Disponible' : 'Agotado'}
                 </button>
               </div>
 
-              {/* Info */}
+              {/* Información del Producto */}
               <div className={styles.info}>
-                <p className={styles.name}>{product.name}</p>
-                {product.category_name && (
-                  <p className={styles.cat}>{product.category_name}</p>
-                )}
-                <p className={styles.price}>Bs {Number(product.price_bs).toFixed(2)}</p>
+                <div className={styles.topInfo}>
+                  <p className={styles.name}>{product.name}</p>
+                  {product.category_name && (
+                    <span className={styles.cat}>{product.category_name}</span>
+                  )}
+                </div>
+                <div className={styles.bottomInfo}>
+                  <p className={styles.price}>
+                    <span className={styles.currency}>Bs</span> {Number(product.price_bs).toFixed(2)}
+                  </p>
+                </div>
               </div>
 
-              {/* Acciones */}
+              {/* Acciones Rápidas */}
               <div className={styles.actions}>
-                <button className="btn btn-ghost" onClick={() => setModal(product)}>
+                <button className={`btn btn-ghost ${styles.editBtn}`} onClick={() => setModal(product)}>
                   Editar
                 </button>
-                <button className="btn btn-danger" onClick={() => setConfirmId(product.id)}>
+                <button className={`btn btn-danger-soft ${styles.deleteBtn}`} onClick={() => setConfirmId(product.id)}>
                   Eliminar
                 </button>
               </div>
@@ -137,14 +171,16 @@ export default function ProductsPage() {
         />
       )}
 
-      {/* Confirm eliminar */}
+      {/* Overlay de confirmación mejorado */}
       {confirmId && (
         <div className={styles.overlay}>
-          <div className={styles.confirm}>
-            <p>¿Eliminar este producto? Esta acción no se puede deshacer.</p>
+          <div className={styles.confirmCard}>
+            <div className={styles.confirmIcon}>🗑️</div>
+            <h3>¿Eliminar producto?</h3>
+            <p>Esta acción quitará el producto de tu catálogo permanentemente y no se puede deshacer.</p>
             <div className={styles.confirmBtns}>
               <button className="btn btn-ghost" onClick={() => setConfirmId(null)}>Cancelar</button>
-              <button className="btn btn-danger" onClick={handleDelete}>Eliminar</button>
+              <button className="btn btn-danger" onClick={handleDelete}>Sí, eliminar</button>
             </div>
           </div>
         </div>
