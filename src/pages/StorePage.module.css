@@ -87,6 +87,7 @@
   border-radius: 12px;
   font-weight: 700;
   font-size: 0.85rem;
+  white-space: nowrap;
 }
 
 /* Contenedor principal */
@@ -124,8 +125,9 @@
   border: 1.5px solid #e2e8f0;
   border-radius: 12px;
   background: #fff;
-  font-size: 0.95rem;
+  font-size: 16px; /* Evita zoom automático en iOS */
   transition: all 0.2s;
+  appearance: none;
 }
 
 .search:focus {
@@ -139,6 +141,7 @@
   margin-inline: -20px;
   padding-inline: 20px;
   scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
 }
 .catsScroll::-webkit-scrollbar { display: none; }
 
@@ -184,6 +187,7 @@
   flex-direction: column;
   border: 1px solid rgba(0,0,0,0.04);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  height: 100%;
 }
 
 .card:hover {
@@ -218,6 +222,7 @@
   font-weight: 700;
   padding: 4px 8px;
   border-radius: 8px;
+  z-index: 2;
 }
 
 .cardBody { padding: 20px 20px 12px; flex: 1; }
@@ -227,6 +232,11 @@
   font-size: 1.05rem;
   color: #1e293b;
   line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  min-height: 2.8em;
 }
 
 .productDesc {
@@ -261,6 +271,7 @@
   align-items: center;
   justify-content: center;
   transition: all 0.2s;
+  flex-shrink: 0;
 }
 
 .shareBtn:hover { background: #fff; border-color: var(--color-cta); color: var(--color-cta); }
@@ -288,12 +299,55 @@
   padding: 20px;
 }
 
-.lbContent { position: relative; max-width: 1000px; width: 100%; display: flex; flex-direction: column; align-items: center; gap: 24px; }
-.lbImg { max-width: 100%; max-height: 70dvh; border-radius: 24px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5); }
-.lbNav { display: flex; align-items: center; gap: 32px; }
-.lbArrow { width: 50px; height: 50px; border-radius: 50%; background: rgba(255,255,255,0.1); color: #fff; border: none; font-size: 2rem; cursor: pointer; }
-.lbArrow:hover:not(:disabled) { background: rgba(255,255,255,0.2); }
-.lbClose { position: absolute; top: -60px; right: 0; width: 44px; height: 44px; border-radius: 50%; background: rgba(255,255,255,0.1); color: #fff; border: none; font-size: 1.2rem; cursor: pointer; }
+.lbContent { 
+  position: relative; 
+  max-width: 1000px; 
+  width: 100%; 
+  display: flex; 
+  flex-direction: column; 
+  align-items: center; 
+  gap: 24px; 
+}
+
+.lbImg { 
+  max-width: 100%; 
+  max-height: 75dvh; 
+  border-radius: 20px; 
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5); 
+  object-fit: contain;
+}
+
+.lbNav { display: flex; align-items: center; gap: clamp(16px, 5vw, 32px); }
+
+.lbArrow { 
+  width: 44px; 
+  height: 44px; 
+  border-radius: 50%; 
+  background: rgba(255,255,255,0.15); 
+  color: #fff; 
+  border: none; 
+  font-size: 1.5rem; 
+  cursor: pointer; 
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.lbArrow:hover:not(:disabled) { background: rgba(255,255,255,0.3); }
+
+.lbClose { 
+  position: absolute; 
+  top: -50px; 
+  right: 0; 
+  width: 40px; 
+  height: 40px; 
+  border-radius: 50%; 
+  background: rgba(255,255,255,0.15); 
+  color: #fff; 
+  border: none; 
+  font-size: 1rem; 
+  cursor: pointer; 
+}
 
 /* Skeletons */
 .loadingWrapper { padding-top: 0; }
@@ -304,19 +358,82 @@
 
 @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
 
-/* Responsive */
+/* --- MEJORAS RESPONSIVE --- */
+
+@media (max-width: 1024px) {
+  .grid {
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 20px;
+  }
+}
+
 @media (max-width: 600px) {
-  .storeHeaderInner { padding: 12px 16px; }
-  .logo { width: 44px; height: 44px; border-radius: 12px; }
-  .storeName { font-size: 1.1rem; }
-  .grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+  .storeHeaderInner { padding: 10px 12px; gap: 10px; }
+  
+  .logo, .logoFallback { width: 40px; height: 40px; border-radius: 10px; }
+  
+  .storeName { font-size: 1rem; }
+  .storeCity { font-size: 0.75rem; }
+
+  .container { padding: 16px 12px; }
+  
+  .grid { 
+    grid-template-columns: repeat(2, 1fr); 
+    gap: 12px; 
+  }
+
   .card { border-radius: 16px; }
+
   .cardBody { padding: 12px; }
-  .productName { font-size: 0.9rem; }
-  .productPrice { font-size: 1rem; margin-top: 4px; }
-  .cardFooter { padding: 8px 12px 12px; gap: 6px; }
-  .btnBuy { font-size: 0.75rem; padding: 8px; border-radius: 10px; }
-  .shareBtn { width: 36px; height: 36px; border-radius: 10px; }
-  .btnWa span { display: none; }
-  .btnWa { padding: 10px; }
+
+  .productName { 
+    font-size: 0.88rem; 
+    min-height: 2.8em;
+    margin-bottom: 0;
+  }
+
+  .productDesc { display: none; } /* Ocultamos descripción en grid móvil para limpieza visual */
+
+  .productPrice { font-size: 1.1rem; margin-top: 8px; }
+
+  .cardFooter { padding: 0 12px 12px; gap: 8px; }
+
+  .btnBuy { 
+    font-size: 0.75rem; 
+    padding: 10px 8px; 
+    border-radius: 10px; 
+  }
+
+  .shareBtn { 
+    width: 38px; 
+    height: 38px; 
+    border-radius: 10px; 
+  }
+
+  .btnWa { 
+    padding: 8px 12px; 
+    font-size: 0.8rem;
+  }
+  
+  .btnWa span { display: none; } /* Ocultar texto "WhatsApp" en móviles muy pequeños */
+
+  /* Lightbox móvil */
+  .lbImg { max-height: 60dvh; }
+  .lbClose { top: -45px; right: 5px; }
+  .lbNav { gap: 40px; }
+}
+
+@media (max-width: 400px) {
+  .grid {
+    gap: 8px;
+  }
+  
+  .storeName {
+    max-width: 140px; /* Evita que el nombre empuje el botón de WhatsApp */
+  }
+
+  .catBtn {
+    padding: 6px 14px;
+    font-size: 0.8rem;
+  }
 }

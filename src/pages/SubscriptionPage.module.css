@@ -3,7 +3,7 @@
 .page {
   min-height: 100dvh;
   background: #f8fafc;
-  padding: 40px 20px;
+  padding: clamp(24px, 5vw, 40px) clamp(16px, 4vw, 20px);
 }
 
 .center {
@@ -48,7 +48,7 @@
 }
 
 .title {
-  font-size: 1.85rem;
+  font-size: clamp(1.5rem, 6vw, 1.85rem);
   font-weight: 800;
   color: #0f172a;
   letter-spacing: -0.02em;
@@ -77,6 +77,7 @@
 .statusInfo {
   font-size: 0.95rem;
   color: #334155;
+  flex: 1; /* Permite que el texto ocupe espacio y el badge no se aplaste */
 }
 
 .badge {
@@ -85,6 +86,7 @@
   font-size: 0.75rem;
   font-weight: 800;
   text-transform: uppercase;
+  white-space: nowrap;
 }
 
 .badgeTrial { background: #fef3c7; color: #92400e; }
@@ -96,7 +98,7 @@
   background: #fff;
   border: 2px solid #2ecc71;
   border-radius: 20px;
-  padding: 40px 32px 32px 32px; /* Más padding arriba para la etiqueta */
+  padding: clamp(32px, 8vw, 40px) clamp(20px, 6vw, 32px) 32px; 
   position: relative;
   box-shadow: 0 10px 15px -3px rgba(46, 204, 113, 0.08);
   margin-top: 10px;
@@ -115,6 +117,7 @@
   border-radius: 99px;
   letter-spacing: 0.05em;
   box-shadow: 0 4px 6px -1px rgba(46, 204, 113, 0.3);
+  white-space: nowrap;
 }
 
 .planHeader {
@@ -162,15 +165,17 @@
 
 .features li {
   display: flex;
-  align-items: center;
+  align-items: flex-start; /* Mejor alineación si el texto tiene dos líneas */
   gap: 12px;
   font-size: 0.95rem;
   color: #475569;
+  line-height: 1.4;
 }
 
 .checkIcon {
   color: #2ecc71;
   flex-shrink: 0;
+  margin-top: 3px;
 }
 
 /* Pay Card */
@@ -178,7 +183,7 @@
   background: #fff;
   border: 1px solid #e2e8f0;
   border-radius: 20px;
-  padding: 32px;
+  padding: clamp(20px, 6vw, 32px);
 }
 
 .payTitle {
@@ -205,12 +210,15 @@
   background: #f8fafc;
   border: 1px solid #e2e8f0;
   border-radius: 16px;
-  padding: 20px;
+  padding: clamp(16px, 4vw, 20px);
+  display: flex;
+  flex-direction: column;
 }
 
 .methodHeader {
   display: flex;
   justify-content: space-between;
+  align-items: center;
   margin-bottom: 16px;
 }
 
@@ -228,11 +236,13 @@
   flex-direction: column;
   align-items: center;
   gap: 10px;
+  width: 100%;
 }
 
 .qrImage {
   width: 100%;
   max-width: 140px;
+  aspect-ratio: 1;
   border: 4px solid #fff;
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0,0,0,0.05);
@@ -243,6 +253,7 @@
   font-weight: 700;
   color: #2ecc71;
   text-decoration: none;
+  padding: 4px;
 }
 
 .bankDetails {
@@ -253,7 +264,7 @@
 
 .bankRow { display: flex; flex-direction: column; }
 .bankLabel { font-size: 0.65rem; color: #94a3b8; font-weight: 700; text-transform: uppercase; }
-.bankValue { font-size: 0.85rem; color: #1e293b; font-weight: 600; }
+.bankValue { font-size: 0.85rem; color: #1e293b; font-weight: 600; word-break: break-all; } /* Evita desborde de números de cuenta largos */
 
 .helperText {
   margin-top: 12px;
@@ -264,22 +275,25 @@
 
 /* Form */
 .formHeader { display: flex; align-items: center; gap: 12px; margin-bottom: 24px; }
-.backBtn { background: none; border: none; color: #64748b; font-weight: 600; cursor: pointer; }
+.backBtn { background: none; border: none; color: #64748b; font-weight: 600; cursor: pointer; padding: 8px 0; }
 .formGrid { display: flex; flex-direction: column; gap: 16px; margin-bottom: 24px; }
 .label { display: flex; flex-direction: column; gap: 6px; font-size: 0.85rem; font-weight: 700; }
-.input { padding: 12px; border: 1.5px solid #e2e8f0; border-radius: 10px; font-size: 0.95rem; }
+.input { padding: 12px; border: 1.5px solid #e2e8f0; border-radius: 10px; font-size: 16px; } /* 16px para evitar zoom en iOS */
 .input:focus { outline: none; border-color: #2ecc71; }
 
 .fileLabel {
   display: block;
-  padding: 12px;
+  padding: 16px;
   border: 2px dashed #cbd5e1;
   border-radius: 10px;
   text-align: center;
   color: #64748b;
   cursor: pointer;
   font-size: 0.85rem;
+  transition: background 0.2s;
 }
+
+.fileLabel:active { background: #f1f5f9; }
 
 .fileName { font-size: 0.8rem; color: #2ecc71; font-weight: 600; margin-top: 4px; text-align: center; display: block; }
 .optional { font-weight: 400; color: #94a3b8; }
@@ -320,13 +334,13 @@
 /* Success Card */
 .sentCard {
   background: #fff;
-  padding: 40px;
+  padding: clamp(24px, 8vw, 40px);
   border-radius: 24px;
   text-align: center;
 }
 
 .sentIconWrapper { margin-bottom: 20px; }
-.sentIcon { font-size: 2rem; color: #166534; }
+.sentIcon { font-size: 2.5rem; color: #166534; }
 .sentTitle { font-size: 1.4rem; font-weight: 800; margin-bottom: 8px; }
 .sentText { color: #64748b; font-size: 0.95rem; margin-bottom: 24px; }
 
@@ -339,8 +353,59 @@
   to { opacity: 1; transform: translateY(0); }
 }
 
-@media (max-width: 500px) {
-  .payMethods { grid-template-columns: 1fr; }
-  .planHeader { flex-direction: column; gap: 12px; }
-  .planPrice { text-align: left; }
+/* --- MEJORAS RESPONSIVE --- */
+
+@media (max-width: 600px) {
+  .statusFlex {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  
+  .badge {
+    width: fit-content;
+  }
+
+  .payMethods { 
+    grid-template-columns: 1fr; 
+    gap: 16px;
+  }
+
+  .planHeader { 
+    flex-direction: column; 
+    gap: 8px; 
+  }
+  
+  .planPrice { 
+    text-align: left; 
+    border-top: 1px solid #f1f5f9;
+    padding-top: 12px;
+    width: 100%;
+  }
+
+  .priceAmount {
+    font-size: 1.5rem;
+  }
+  
+  .qrImage {
+    max-width: 180px; /* Un poco más grande si está solo en la fila */
+  }
+}
+
+@media (max-width: 400px) {
+  .page {
+    padding-top: 24px;
+  }
+  
+  .title {
+    font-size: 1.4rem;
+  }
+
+  .payCard {
+    padding: 16px;
+  }
+  
+  .methodHeader {
+    margin-bottom: 12px;
+  }
 }

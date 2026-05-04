@@ -3,7 +3,7 @@
 .page {
   max-width: 1200px;
   margin-inline: auto;
-  padding: 40px 24px;
+  padding: clamp(24px, 5vw, 40px) clamp(16px, 4vw, 24px);
   animation: fadeIn 0.4s ease-out;
 }
 
@@ -44,7 +44,7 @@
 
 .title {
   font-family: 'Fraunces', serif;
-  font-size: 2.2rem;
+  font-size: clamp(1.8rem, 5vw, 2.2rem);
   font-weight: 700;
   color: var(--color-text);
   margin: 0;
@@ -73,6 +73,7 @@
   display: flex;
   align-items: center;
   gap: 8px;
+  white-space: nowrap;
 }
 
 /* Toolbar de Filtros */
@@ -109,6 +110,7 @@
   font-size: 0.95rem;
   outline: none;
   transition: all 0.2s;
+  appearance: none;
 }
 
 .search:focus {
@@ -132,7 +134,7 @@
 /* Empty State */
 .empty {
   text-align: center;
-  padding: 80px 40px;
+  padding: clamp(40px, 10vw, 80px) 20px;
   background: #fff;
   border: 2px dashed #e5e7eb;
   border-radius: 24px;
@@ -156,6 +158,7 @@
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   display: flex;
   flex-direction: column;
+  height: 100%;
 }
 
 .card:hover {
@@ -201,6 +204,7 @@
   gap: 6px;
   box-shadow: 0 4px 6px rgba(0,0,0,0.1);
   cursor: pointer;
+  z-index: 2;
 }
 
 .statusDot { width: 6px; height: 6px; border-radius: 50%; }
@@ -226,6 +230,7 @@
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
+  min-height: 2.8em;
 }
 
 .cat {
@@ -250,6 +255,11 @@
   padding: 12px 20px 20px;
   display: flex;
   gap: 10px;
+}
+
+.editBtn, .deleteBtn {
+  flex: 1;
+  justify-content: center;
 }
 
 .editBtn {
@@ -283,8 +293,9 @@
 .confirmCard {
   background: #fff;
   border-radius: 28px;
-  padding: 40px;
+  padding: clamp(24px, 8vw, 40px);
   max-width: 420px;
+  width: 100%;
   text-align: center;
   box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
   animation: popIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
@@ -316,9 +327,97 @@
 
 .confirmBtns button { flex: 1; padding: 12px; border-radius: 12px; font-weight: 600; }
 
-/* Responsive */
+/* --- MEJORAS RESPONSIVE --- */
+
+@media (max-width: 1024px) {
+  .grid {
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 20px;
+  }
+}
+
 @media (max-width: 768px) {
-  .header { flex-direction: column; align-items: flex-start; }
-  .addBtn { width: 100%; justify-content: center; }
-  .toolbar { flex-direction: column; }
+  .header { 
+    flex-direction: column; 
+    align-items: flex-start; 
+    gap: 16px; 
+    margin-bottom: 32px;
+  }
+  
+  .addBtn { 
+    width: 100%; 
+    justify-content: center; 
+    order: -1; /* Botón de añadir arriba en móvil */
+  }
+
+  .titleWrap {
+    width: 100%;
+  }
+  
+  .toolbar { 
+    flex-direction: column; 
+    padding: 12px;
+    gap: 12px;
+  }
+
+  .searchWrapper, .selectWrapper {
+    width: 100%;
+  }
+}
+
+@media (max-width: 540px) {
+  .grid {
+    grid-template-columns: repeat(2, 1fr); /* 2 productos por fila para aprovechar el alto */
+    gap: 12px;
+  }
+
+  .page {
+    padding-inline: 12px;
+  }
+
+  .card {
+    border-radius: 16px;
+  }
+
+  .info {
+    padding: 12px;
+  }
+
+  .name {
+    font-size: 0.95rem;
+    min-height: 3em;
+  }
+
+  .price {
+    font-size: 1.1rem;
+    margin-top: 8px;
+  }
+
+  .actions {
+    padding: 0 12px 12px;
+    flex-direction: column; /* Botones uno sobre otro en móviles pequeños */
+    gap: 8px;
+  }
+
+  .editBtn, .deleteBtn {
+    padding: 8px;
+    font-size: 0.85rem;
+  }
+
+  .badge {
+    top: 8px;
+    left: 8px;
+    padding: 4px 8px;
+    font-size: 0.65rem;
+  }
+  
+  .confirmBtns {
+    flex-direction: column;
+  }
+}
+
+@media (max-width: 380px) {
+  .grid {
+    grid-template-columns: 1fr; /* 1 sola columna si la pantalla es extremadamente estrecha */
+  }
 }

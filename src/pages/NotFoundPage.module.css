@@ -1,4 +1,5 @@
 /* src/pages/NotFoundPage.module.css */
+
 .container {
   min-height: 100dvh;
   display: flex;
@@ -16,6 +17,7 @@
   position: relative;
   z-index: 2;
   max-width: 400px;
+  width: 100%; /* Asegura que ocupe el ancho disponible */
   animation: fadeInUp 0.6s ease-out;
 }
 
@@ -31,7 +33,7 @@
 }
 
 .icon {
-  font-size: 5rem;
+  font-size: clamp(4rem, 15vw, 5rem); /* Tamaño fluido para el ícono */
   margin: 0;
   position: relative;
   z-index: 2;
@@ -43,8 +45,8 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 100px;
-  height: 100px;
+  width: clamp(80px, 25vw, 100px); /* Pulso proporcional al ícono */
+  height: clamp(80px, 25vw, 100px);
   background: var(--color-cta-light);
   border-radius: 50%;
   opacity: 0.2;
@@ -59,27 +61,31 @@
 
 .title {
   font-family: 'Fraunces', serif;
-  font-size: 2.5rem;
+  font-size: clamp(2rem, 10vw, 2.5rem); /* Título fluido */
   font-weight: 700;
   color: var(--color-text);
   margin: 0 0 16px;
   letter-spacing: -0.02em;
+  line-height: 1.1;
 }
 
 .description {
   color: var(--color-text-2);
-  font-size: 1rem;
+  font-size: clamp(0.95rem, 4vw, 1rem); /* Texto legible en móvil */
   line-height: 1.6;
   margin-bottom: 32px;
+  padding-inline: 10px; /* Evita que el texto toque los bordes */
 }
 
 .homeBtn {
   display: inline-block;
-  padding: 0.8rem 2rem;
+  padding: 0.9rem 2.2rem; /* Ligeramente más grande para facilitar el toque */
   font-weight: 600;
   border-radius: 100px;
   text-decoration: none;
   transition: all 0.3s ease;
+  background: var(--color-cta); /* Aseguramos que tenga el color principal */
+  color: white;
 }
 
 .homeBtn:hover {
@@ -88,7 +94,7 @@
 }
 
 .footerBrand {
-  margin-top: 64px;
+  margin-top: clamp(40px, 10vh, 64px); /* Espaciado dinámico */
   font-size: 0.85rem;
   color: var(--color-text-3);
 }
@@ -98,10 +104,65 @@
   color: var(--color-text-2);
 }
 
-/* Soporte para modo oscuro si lo usas */
+/* Soporte para modo oscuro */
 @media (prefers-color-scheme: dark) {
   .pulse {
     background: var(--color-cta);
     opacity: 0.1;
+  }
+}
+
+/* --- MEJORAS RESPONSIVE --- */
+
+@media (max-width: 768px) {
+  /* Tablets */
+  .content {
+    max-width: 350px;
+  }
+  
+  .title {
+    margin-bottom: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  /* Móviles */
+  .container {
+    padding: 20px;
+    justify-content: center; /* Centrado vertical estricto */
+  }
+
+  .content {
+    max-width: 100%; /* Usa todo el espacio lateral */
+  }
+
+  .description {
+    margin-bottom: 24px;
+    font-size: 0.9rem;
+  }
+
+  .homeBtn {
+    width: 100%; /* Botón ancho completo en móviles pequeños para ergonomía */
+    max-width: 240px; /* Pero no exageradamente largo */
+  }
+
+  .footerBrand {
+    position: absolute;
+    bottom: 24px; /* Pegado abajo para dejar aire al contenido central */
+    margin-top: 0;
+  }
+}
+
+/* Ajuste para pantallas muy cortas (Landscape) */
+@media (max-height: 500px) {
+  .container {
+    padding-block: 40px;
+  }
+  .footerBrand {
+    position: static;
+    margin-top: 32px;
+  }
+  .iconWrapper {
+    margin-bottom: 12px;
   }
 }
