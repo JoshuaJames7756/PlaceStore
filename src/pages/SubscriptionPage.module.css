@@ -2,7 +2,7 @@
 
 .page {
   min-height: 100dvh;
-  background: #f8fafc; /* Fondo más limpio */
+  background: #f8fafc;
   padding: 40px 20px;
 }
 
@@ -28,7 +28,7 @@
   width: 40px;
   height: 40px;
   border: 4px solid rgba(46, 204, 113, 0.1);
-  border-top-color: var(--color-cta);
+  border-top-color: #2ecc71;
   border-radius: 50%;
   animation: spin 0.8s cubic-bezier(0.4, 0, 0.2, 1) infinite;
 }
@@ -66,7 +66,6 @@
   border: 1px solid #e2e8f0;
   border-radius: 16px;
   padding: 16px 20px;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.02);
 }
 
 .statusFlex {
@@ -80,45 +79,42 @@
   color: #334155;
 }
 
-.statusInfo strong {
-  color: #0f172a;
-  font-weight: 700;
-}
-
 .badge {
   padding: 6px 14px;
   border-radius: 99px;
   font-size: 0.75rem;
   font-weight: 800;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
 }
 
 .badgeTrial { background: #fef3c7; color: #92400e; }
 .badgeActive { background: #dcfce7; color: #166534; }
 .badgeExpired { background: #fee2e2; color: #991b1b; }
 
-/* Plan Card Premium */
+/* Plan Card REVISADA */
 .planCard {
   background: #fff;
-  border: 2px solid var(--color-cta);
+  border: 2px solid #2ecc71;
   border-radius: 20px;
-  padding: 32px;
+  padding: 40px 32px 32px 32px; /* Más padding arriba para la etiqueta */
   position: relative;
-  overflow: hidden;
-  box-shadow: 0 10px 15px -3px rgba(46, 204, 113, 0.1);
+  box-shadow: 0 10px 15px -3px rgba(46, 204, 113, 0.08);
+  margin-top: 10px;
 }
 
-.premiumTag {
+.premiumLabel {
   position: absolute;
-  top: 12px;
-  right: -30px;
-  background: var(--color-cta);
+  top: -12px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #2ecc71;
   color: white;
-  font-size: 0.65rem;
+  font-size: 0.7rem;
   font-weight: 800;
-  padding: 4px 35px;
-  transform: rotate(45deg);
+  padding: 4px 16px;
+  border-radius: 99px;
+  letter-spacing: 0.05em;
+  box-shadow: 0 4px 6px -1px rgba(46, 204, 113, 0.3);
 }
 
 .planHeader {
@@ -129,7 +125,7 @@
 }
 
 .planName {
-  font-size: 1.25rem;
+  font-size: 1.35rem;
   font-weight: 800;
   color: #0f172a;
 }
@@ -140,19 +136,20 @@
   margin-top: 4px;
 }
 
+.planPrice {
+  text-align: right;
+}
+
 .priceAmount {
-  font-size: 2rem;
+  font-size: 1.75rem;
   font-weight: 800;
-  color: var(--color-cta-dark);
+  color: #27ae60;
   display: block;
-  line-height: 1;
 }
 
 .pricePeriod {
   font-size: 0.85rem;
   color: #94a3b8;
-  text-align: right;
-  display: block;
 }
 
 .features {
@@ -172,7 +169,7 @@
 }
 
 .checkIcon {
-  color: var(--color-cta);
+  color: #2ecc71;
   flex-shrink: 0;
 }
 
@@ -182,27 +179,26 @@
   border: 1px solid #e2e8f0;
   border-radius: 20px;
   padding: 32px;
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
 }
 
 .payTitle {
-  font-size: 1.15rem;
+  font-size: 1.1rem;
   font-weight: 800;
-  color: #0f172a;
+  margin-bottom: 8px;
 }
 
 .payDesc {
-  font-size: 0.95rem;
+  font-size: 0.9rem;
   color: #64748b;
-  line-height: 1.6;
+  margin-bottom: 24px;
+  line-height: 1.5;
 }
 
 .payMethods {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 20px;
+  margin-bottom: 24px;
 }
 
 .payMethod {
@@ -210,15 +206,12 @@
   border: 1px solid #e2e8f0;
   border-radius: 16px;
   padding: 20px;
-  display: flex;
-  flex-direction: column;
 }
 
 .methodHeader {
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  margin-bottom: 12px;
+  margin-bottom: 16px;
 }
 
 .methodBadge {
@@ -226,7 +219,7 @@
   background: #e0f2fe;
   color: #0369a1;
   padding: 2px 8px;
-  border-radius: 6px;
+  border-radius: 4px;
   font-weight: 700;
 }
 
@@ -234,153 +227,77 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
 }
 
 .qrImage {
   width: 100%;
-  max-width: 180px;
-  border-radius: 12px;
-  box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+  max-width: 140px;
   border: 4px solid #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
 }
 
 .downloadLink {
-  font-size: 0.8rem;
+  font-size: 0.75rem;
   font-weight: 700;
-  color: var(--color-cta-dark);
+  color: #2ecc71;
   text-decoration: none;
 }
 
 .bankDetails {
   display: flex;
   flex-direction: column;
-  gap: 8px;
-}
-
-.bankRow {
-  display: flex;
-  flex-direction: column;
-}
-
-.bankLabel {
-  font-size: 0.7rem;
-  color: #94a3b8;
-  text-transform: uppercase;
-  font-weight: 700;
-}
-
-.bankValue {
-  font-size: 0.85rem;
-  color: #1e293b;
-  font-weight: 600;
-}
-
-.helperText {
-  margin-top: auto;
-  padding-top: 12px;
-  font-size: 0.75rem;
-  color: #94a3b8;
-  text-align: center;
-}
-
-/* Form Styling */
-.formHeader {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-}
-
-.backBtn {
-  background: none;
-  border: none;
-  color: #64748b;
-  font-weight: 600;
-  font-size: 0.9rem;
-  cursor: pointer;
-}
-
-.formGrid {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
-
-.label {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  font-size: 0.9rem;
-  font-weight: 700;
-  color: #334155;
-}
-
-.input {
-  padding: 12px 16px;
-  border: 1.5px solid #e2e8f0;
-  border-radius: 12px;
-  font-size: 1rem;
-  transition: all 0.2s;
-}
-
-.input:focus {
-  border-color: var(--color-cta);
-  box-shadow: 0 0 0 4px rgba(46, 204, 113, 0.1);
-  outline: none;
-}
-
-.fileUploadWrapper {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.fileInputHidden { display: none; }
-
-.fileLabel {
-  display: block;
-  padding: 14px;
-  border: 2px dashed #cbd5e1;
-  border-radius: 12px;
-  text-align: center;
-  color: #64748b;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.fileLabel:hover {
-  border-color: var(--color-cta);
-  background: #f0fdf4;
-  color: var(--color-cta-dark);
-}
-
-.fileName {
-  font-size: 0.8rem;
-  color: var(--color-cta-dark);
-  font-weight: 600;
-  text-align: center;
-}
-
-.optional {
-  font-weight: 400;
-  color: #94a3b8;
-  font-size: 0.8rem;
-}
-
-.actionBtn {
-  padding: 16px;
-  border-radius: 14px;
-  font-weight: 800;
-  font-size: 1rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   gap: 10px;
 }
 
+.bankRow { display: flex; flex-direction: column; }
+.bankLabel { font-size: 0.65rem; color: #94a3b8; font-weight: 700; text-transform: uppercase; }
+.bankValue { font-size: 0.85rem; color: #1e293b; font-weight: 600; }
+
+.helperText {
+  margin-top: 12px;
+  font-size: 0.7rem;
+  color: #94a3b8;
+  text-align: center;
+}
+
+/* Form */
+.formHeader { display: flex; align-items: center; gap: 12px; margin-bottom: 24px; }
+.backBtn { background: none; border: none; color: #64748b; font-weight: 600; cursor: pointer; }
+.formGrid { display: flex; flex-direction: column; gap: 16px; margin-bottom: 24px; }
+.label { display: flex; flex-direction: column; gap: 6px; font-size: 0.85rem; font-weight: 700; }
+.input { padding: 12px; border: 1.5px solid #e2e8f0; border-radius: 10px; font-size: 0.95rem; }
+.input:focus { outline: none; border-color: #2ecc71; }
+
+.fileLabel {
+  display: block;
+  padding: 12px;
+  border: 2px dashed #cbd5e1;
+  border-radius: 10px;
+  text-align: center;
+  color: #64748b;
+  cursor: pointer;
+  font-size: 0.85rem;
+}
+
+.fileName { font-size: 0.8rem; color: #2ecc71; font-weight: 600; margin-top: 4px; text-align: center; display: block; }
+.optional { font-weight: 400; color: #94a3b8; }
+
+.actionBtn {
+  width: 100%;
+  padding: 14px;
+  border-radius: 12px;
+  font-weight: 800;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+}
+
 .miniSpinner {
-  width: 18px;
-  height: 18px;
+  width: 16px;
+  height: 16px;
   border: 2px solid rgba(255,255,255,0.3);
   border-top-color: #fff;
   border-radius: 50%;
@@ -388,68 +305,42 @@
 }
 
 .error {
+  background: #fff1f2;
+  color: #be123c;
+  padding: 12px;
+  border-radius: 8px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  margin-bottom: 16px;
   display: flex;
   align-items: center;
   gap: 8px;
-  background: #fff1f2;
-  color: #be123c;
-  padding: 12px 16px;
-  border-radius: 10px;
-  font-size: 0.85rem;
-  font-weight: 600;
 }
 
-/* Sent Card */
+/* Success Card */
 .sentCard {
   background: #fff;
+  padding: 40px;
   border-radius: 24px;
-  padding: 48px 32px;
   text-align: center;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 20px;
 }
 
-.sentIconWrapper {
-  position: relative;
-  width: 80px;
-  height: 80px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
+.sentIconWrapper { margin-bottom: 20px; }
+.sentIcon { font-size: 2rem; color: #166534; }
+.sentTitle { font-size: 1.4rem; font-weight: 800; margin-bottom: 8px; }
+.sentText { color: #64748b; font-size: 0.95rem; margin-bottom: 24px; }
 
-.checkRing {
-  position: absolute;
-  inset: 0;
-  border: 4px solid #dcfce7;
-  border-radius: 50%;
-}
-
-.sentIcon {
-  font-size: 2.5rem;
-  color: #166534;
-  font-weight: bold;
-}
-
-.sentTitle { font-size: 1.5rem; font-weight: 800; }
-.sentText { color: #64748b; line-height: 1.6; }
-
-/* Animations */
 .formAnimation {
-  animation: slideUp 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  animation: slideUp 0.3s ease-out;
 }
 
 @keyframes slideUp {
-  from { opacity: 0; transform: translateY(20px); }
+  from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
-@media (max-width: 480px) {
+@media (max-width: 500px) {
   .payMethods { grid-template-columns: 1fr; }
-  .planHeader { flex-direction: column; gap: 16px; }
+  .planHeader { flex-direction: column; gap: 12px; }
   .planPrice { text-align: left; }
-  .container { gap: 16px; }
-  .page { padding: 20px 16px; }
 }

@@ -91,7 +91,7 @@ export default function SubscriptionPage() {
         </div>
 
         <div className={styles.planCard}>
-          <div className={styles.premiumTag}>RECOMENDADO</div>
+          <div className={styles.premiumLabel}>PLAN RECOMENDADO</div>
           <div className={styles.planHeader}>
             <div>
               <p className={styles.planName}>Plan Básico Pro</p>
@@ -151,7 +151,7 @@ export default function SubscriptionPage() {
                   </div>
                   <div className={styles.bankRow}>
                     <span className={styles.bankLabel}>Titular:</span>
-                    <span className={styles.bankValue}>PlaceStore</span>
+                    <span className={styles.bankValue}>Joshua - JVSoftware</span>
                   </div>
                 </div>
                 <p className={styles.helperText}>Copia los datos para tu transferencia</p>
@@ -216,7 +216,7 @@ export default function SubscriptionPage() {
               disabled={sending}
             >
               {sending ? (
-                <><span className={styles.miniSpinner}></span> Enviando comprobante...</>
+                <><span className={styles.miniSpinner}></span> Enviando...</>
               ) : (
                 'Finalizar y Enviar'
               )}
@@ -230,12 +230,11 @@ export default function SubscriptionPage() {
               <div className={styles.checkRing}></div>
               <span className={styles.sentIcon}>✓</span>
             </div>
-            <h2 className={styles.sentTitle}>¡Todo listo!</h2>
+            <h2 className={styles.sentTitle}>¡Recibido!</h2>
             <p className={styles.sentText}>
-              Hemos recibido tu información. Nuestro equipo validará el pago y 
-              tu cuenta se actualizará automáticamente en un lapso de 24 horas.
+              Validaremos tu pago en menos de 24 horas. Recibirás una notificación cuando tu plan esté activo.
             </p>
-            <button className="btn btn-ghost" onClick={() => window.location.reload()}>Cerrar</button>
+            <button className="btn btn-ghost" onClick={() => window.location.reload()}>Regresar al inicio</button>
           </div>
         )}
       </div>
