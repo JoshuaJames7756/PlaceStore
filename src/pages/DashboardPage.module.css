@@ -22,6 +22,7 @@
   padding: var(--space-8);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-sm);
+  margin: var(--space-4); /* Margen para que no toque bordes en móvil */
 }
 
 .spinner {
@@ -87,7 +88,7 @@
   padding: var(--space-4) var(--space-5);
   border-radius: var(--radius-lg);
   font-size: 0.9375rem;
-  flex-wrap: wrap;
+  flex-wrap: wrap; /* Importante para móvil */
 }
 
 .bannerMain {
@@ -117,6 +118,7 @@
   padding: 6px 14px;
   border-radius: var(--radius-md);
   transition: background 0.2s;
+  white-space: nowrap; /* Evita que el botón se rompa en dos líneas */
 }
 
 .bannerLink:hover {
@@ -189,12 +191,16 @@
   display: flex;
   flex-direction: column;
   gap: 4px;
+  min-width: 0; /* Permite que el texto se trunque si es muy largo */
 }
 
 .storeNameBig {
   font-size: 1.5rem;
   font-weight: 800;
   letter-spacing: -0.02em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .storeCity {
@@ -207,6 +213,7 @@
   color: var(--color-cta-dark);
   font-family: var(--font-mono);
   font-weight: 600;
+  font-size: 0.85rem;
 }
 
 .logoHint {
@@ -243,6 +250,7 @@
   text-decoration: none;
   border-bottom: 2px solid rgba(255,255,255,0.3);
   transition: border-color 0.2s;
+  word-break: break-all; /* Importante para URLs largas en móvil */
 }
 
 .catalogUrl:hover { border-color: #fff; }
@@ -257,6 +265,10 @@
   color: #fff;
   border: none;
   font-weight: 700;
+  padding: 10px 20px;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  flex: 1; /* Para que en móvil crezcan igual */
 }
 
 .copyBtn:hover { background: rgba(255,255,255,0.2); }
@@ -357,12 +369,14 @@
   align-items: center;
   justify-content: center;
   font-size: 1.5rem;
+  flex-shrink: 0;
 }
 
 .actionText {
   display: flex;
   flex-direction: column;
   flex: 1;
+  min-width: 0;
 }
 
 .actionLabel {
@@ -373,6 +387,9 @@
 .actionDesc {
   font-size: 0.8rem;
   color: var(--color-text-3);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .actionArrow {
@@ -383,15 +400,93 @@
 
 .actionCard:hover .actionArrow { color: var(--color-cta); }
 
-/* Responsive */
+/* --- MEJORAS RESPONSIVE (Móviles y Tablets) --- */
+
 @media (max-width: 900px) {
-  .statsGrid { grid-template-columns: repeat(2, 1fr); }
-  .actionGrid { grid-template-columns: 1fr; }
+  .container {
+    padding: var(--space-4) var(--space-4);
+  }
+  
+  .statsGrid { 
+    grid-template-columns: repeat(2, 1fr); 
+    gap: var(--space-3);
+  }
+  
+  .actionGrid { 
+    grid-template-columns: 1fr; /* Una columna en tablets también se ve más ordenado */
+  }
+
+  .storeNameBig {
+    font-size: 1.25rem;
+  }
 }
 
 @media (max-width: 600px) {
-  .catalogCard { flex-direction: column; align-items: stretch; text-align: center; }
-  .catalogActions { flex-direction: column; }
-  .storeProfile { flex-direction: column; text-align: center; }
+  .topbar {
+    padding: var(--space-3) var(--space-4);
+  }
+
   .topbarRight .storeName { display: none; }
+
+  /* Ajuste de Banner */
+  .banner {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-3);
+  }
+
+  .bannerLink {
+    width: 100%;
+    text-align: center;
+  }
+
+  /* Perfil en Móvil */
+  .storeProfile { 
+    flex-direction: column; 
+    text-align: center; 
+    padding: var(--space-5);
+    gap: var(--space-4);
+  }
+
+  .storeInfo {
+    align-items: center;
+    width: 100%;
+  }
+
+  /* Catálogo en Móvil */
+  .catalogCard { 
+    flex-direction: column; 
+    align-items: stretch; 
+    text-align: center; 
+    gap: var(--space-4);
+  }
+
+  .catalogActions { 
+    flex-direction: column; 
+    width: 100%;
+  }
+
+  .catalogUrl {
+    font-size: 1rem;
+  }
+
+  /* Stats en Móvil */
+  .statsGrid {
+    grid-template-columns: 1fr; /* Una sola columna para que el valor no se corte */
+  }
+
+  .statValue {
+    font-size: 1.5rem;
+  }
+
+  /* Ajuste de acciones rápidas */
+  .actionCard {
+    padding: var(--space-4);
+  }
+
+  .actionIcon {
+    width: 40px;
+    height: 40px;
+    font-size: 1.2rem;
+  }
 }

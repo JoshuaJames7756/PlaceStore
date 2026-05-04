@@ -54,18 +54,14 @@
 }
 
 /* ─── Hero ─── */
-/*
-  FIX DEFINITIVO:
-  El hero es full-width (sin max-width aquí).
-  El padding-top = 72px (nav fijo) + 80px (aire visual) = 152px.
-  El centrado y el grid van en .heroInner.
-*/
 .hero {
   width: 100%;
   min-height: 100dvh;
   padding: 152px var(--space-6) var(--space-10);
   position: relative;
   z-index: 10;
+  display: flex;
+  align-items: center;
 }
 
 .heroInner {
@@ -76,6 +72,7 @@
   align-items: center;
   gap: var(--space-8);
   height: 100%;
+  width: 100%;
 }
 
 .heroBg {
@@ -128,9 +125,9 @@
 
 .heroTitle {
   font-family: 'Fraunces', serif;
-  font-size: clamp(2.6rem, 6vw, 3.8rem);
+  font-size: clamp(2.4rem, 8vw, 3.8rem);
   font-weight: 700;
-  line-height: 1.05;
+  line-height: 1.1;
   letter-spacing: -0.03em;
   margin-bottom: 1.5rem;
   color: var(--color-text);
@@ -211,11 +208,11 @@
   margin-bottom: 1.5rem;
 }
 
-.mockLogo        { width: 40px; height: 40px; border-radius: 12px; background: #f0fdf4; }
+.mockLogo         { width: 40px; height: 40px; border-radius: 12px; background: #f0fdf4; }
 .mockStoreName   { width: 100px; height: 12px; background: #f3f4f6; border-radius: 4px; }
 .mockGrid        { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 .mockCard        { background: #fafafa; border-radius: 12px; padding-bottom: 8px; overflow: hidden; }
-.mockImg         { height: 80px; background: #f3f4f6; margin-bottom: 8px; }
+.mockImg          { height: 80px; background: #f3f4f6; margin-bottom: 8px; }
 .mockName,
 .mockPrice,
 .mockBtn         { margin: 0 8px 6px; border-radius: 4px; }
@@ -231,12 +228,12 @@
 }
 
 .centeredHeader      { text-align: center; margin-bottom: 4rem; }
-.sectionTitle        { font-family: 'Fraunces', serif; font-size: clamp(2rem, 4vw, 2.75rem); font-weight: 700; margin-bottom: 1rem; text-align: center; }
-.sectionSubtitle     { color: var(--color-text-2); font-size: 1.1rem; text-align: center; }
+.sectionTitle        { font-family: 'Fraunces', serif; font-size: clamp(2rem, 5vw, 2.75rem); font-weight: 700; margin-bottom: 1rem; text-align: center; }
+.sectionSubtitle     { color: var(--color-text-2); font-size: 1.1rem; text-align: center; max-width: 700px; margin-inline: auto; }
 
 /* ─── Features ─── */
 .features            { background: #fff; }
-.featuresGrid        { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 3rem; }
+.featuresGrid        { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 3rem; }
 .featureIconContainer{ width: 56px; height: 56px; background: var(--color-bg); display: flex; align-items: center; justify-content: center; border-radius: 16px; margin-bottom: 1.5rem; font-size: 1.75rem; }
 .featureTitle        { font-size: 1.25rem; font-weight: 700; margin-bottom: 0.75rem; }
 .featureDesc         { font-size: 1rem; color: var(--color-text-2); line-height: 1.6; }
@@ -251,61 +248,154 @@
 
 /* ─── Pricing ─── */
 .pricing         { background: #fdfcf8; }
-.priceCard       { background: white; border: 2px solid var(--color-cta); border-radius: 32px; padding: 3rem; display: grid; grid-template-columns: 1fr 1fr 0.8fr; align-items: center; gap: 2rem; box-shadow: 0 20px 40px rgba(46, 204, 113, 0.1); }
+.priceCard       { 
+  background: white; 
+  border: 2px solid var(--color-cta); 
+  border-radius: 32px; 
+  padding: clamp(2rem, 5vw, 3.5rem); 
+  display: grid; 
+  grid-template-columns: 1fr 1fr 0.8fr; 
+  align-items: center; 
+  gap: 2.5rem; 
+  box-shadow: 0 20px 40px rgba(46, 204, 113, 0.1); 
+}
 .planLabel       { font-size: 0.85rem; font-weight: 600; color: var(--color-text-3); text-transform: uppercase; letter-spacing: 0.05em; }
-.planPrice       { font-family: 'Fraunces', serif; font-size: 3.5rem; font-weight: 700; margin: 0.5rem 0; }
+.planPrice       { font-family: 'Fraunces', serif; font-size: clamp(3rem, 8vw, 4rem); font-weight: 700; margin: 0.5rem 0; line-height: 1; }
 .planPrice span  { font-size: 1.2rem; color: var(--color-text-3); }
-.planTrial       { font-size: 0.9rem; color: var(--color-text-2); }
+.planTrial       { font-size: 0.95rem; color: var(--color-text-2); margin-top: 0.5rem; }
 .priceFeatures   { list-style: none; display: flex; flex-direction: column; gap: 0.75rem; }
 .check           { color: var(--color-cta); font-weight: bold; margin-right: 0.5rem; }
-.priceCTA        { width: 100%; padding: 1rem; font-weight: 700; border-radius: 100px; }
+.priceCTA        { width: 100%; padding: 1.1rem; font-weight: 700; border-radius: 100px; }
 
 /* ─── Footer ─── */
 .footer          { padding: 4rem 0; border-top: 1px solid var(--color-border); }
-.footerInner     { max-width: 1200px; margin: 0 auto; padding: 0 var(--space-6); display: flex; justify-content: space-between; align-items: center; }
+.footerInner     { max-width: 1200px; margin: 0 auto; padding: 0 var(--space-6); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 2rem; }
 .footerBrand     { font-family: 'Fraunces', serif; font-size: 1.4rem; font-weight: 700; }
 .footerText      { font-size: 0.9rem; color: var(--color-text-2); margin-top: 0.25rem; }
-.footerLinks     { display: flex; align-items: center; gap: var(--space-6); }
+.footerLinks     { display: flex; align-items: center; gap: var(--space-6); flex-wrap: wrap; }
 .footerLink      { font-size: 0.9rem; color: var(--color-text-2); }
 .footerCredit    { font-size: 0.85rem; color: var(--color-text-3); }
 
-/* ─── Responsive ─── */
+/* ─── MEJORAS RESPONSIVE ─── */
 @media (max-width: 1024px) {
   .hero {
-    padding-top: 160px;
+    padding-top: 140px;
+    min-height: auto;
   }
   .heroInner {
     grid-template-columns: 1fr;
     text-align: center;
+    gap: 3rem;
   }
   .heroContent {
     display: flex;
     flex-direction: column;
     align-items: center;
   }
-  .heroMock   { display: none; }
-  .steps      { grid-template-columns: 1fr; gap: 2rem; }
-  .priceCard  { grid-template-columns: 1fr; text-align: center; }
+  .heroDesc {
+    margin-inline: auto;
+  }
+  .heroMock { 
+    justify-content: center;
+    margin-top: 2rem;
+  }
+  .mockPhone {
+    width: 260px; /* Un poco más pequeño en tablets */
+  }
+  
+  .steps { 
+    grid-template-columns: 1fr; 
+    gap: 2.5rem;
+    max-width: 500px;
+    margin-inline: auto;
+  }
+  .stepConnector { display: none; } /* Quitamos conectores en vertical */
+  .stepHeader { justify-content: center; }
+
+  .priceCard { 
+    grid-template-columns: 1fr; 
+    text-align: center; 
+    max-width: 500px;
+    margin-inline: auto;
+  }
   .priceFeatures { align-items: center; }
 }
 
 @media (max-width: 640px) {
+  .navInner {
+    padding: 0 var(--space-4);
+  }
+  .navRight {
+    gap: var(--space-4);
+  }
+  .navLink {
+    display: none; /* Ocultamos links secundarios en móvil para limpiar el nav */
+  }
+  .navLink[href*="admin"], .navLink[href*="login"] {
+    display: block; /* Solo dejamos el acceso principal */
+  }
+
   .hero {
-    padding-top: 140px;
-    padding-left: var(--space-5);
-    padding-right: var(--space-5);
+    padding-top: 120px;
+    padding-inline: var(--space-4);
+  }
+  .heroBadge {
+    font-size: 0.75rem;
+    padding: 0.4rem 0.8rem;
+  }
+  .heroTitle {
+    letter-spacing: -0.04em;
   }
   .heroCTAs {
     flex-direction: column;
     width: 100%;
+    gap: 0.75rem;
   }
   .ctaMain, .ctaSecondary {
     width: 100%;
     text-align: center;
+    padding: 1.1rem;
   }
+
+  .sectionInner {
+    padding: 60px var(--space-4);
+  }
+  .centeredHeader {
+    margin-bottom: 2.5rem;
+  }
+
+  .featuresGrid {
+    gap: 2rem;
+  }
+  .featureIconContainer {
+    margin-inline: auto;
+  }
+  .featureTitle, .featureDesc {
+    text-align: center;
+  }
+
+  .priceCard {
+    padding: 2rem 1.5rem;
+    border-radius: 24px;
+  }
+  
   .footerInner {
     flex-direction: column;
-    gap: var(--space-4);
     text-align: center;
+    gap: 1.5rem;
+  }
+  .footerLinks {
+    justify-content: center;
+    gap: var(--space-4);
+  }
+}
+
+/* Soporte para tablets en orientación horizontal */
+@media (min-width: 641px) and (max-width: 1024px) {
+  .heroInner {
+    padding-bottom: 4rem;
+  }
+  .heroMock {
+    display: flex; /* Reaparece el mockup si hay espacio lateral */
   }
 }
